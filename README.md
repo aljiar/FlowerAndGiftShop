@@ -1,0 +1,53 @@
+# Pétalo · Florería en Cochabamba
+
+MVP de tienda floral con Next.js, TypeScript, Tailwind, carrito persistente y checkout con pedidos guardados en SQLite.
+
+## Ejecutar localmente
+
+Requiere Node.js **22.13 o superior**; recomendado Node.js 24.
+
+```powershell
+npm.cmd install
+npm.cmd run setup
+npm.cmd run dev
+```
+
+Abre `http://localhost:3000`. La configuración privada se crea en `.env.local`; incluye `ADMIN_PASSWORD` para entrar en `/admin/pedidos`. El comando `setup` conserva archivos de configuración existentes.
+
+## Flujo de compra
+
+1. Explorar catálogo y variantes, y agregar arreglos al carrito.
+2. Revisar cantidades y dedicatorias.
+3. Completar comprador y destinatario, dirección y franja de entrega.
+4. Confirmar: se guarda el pedido con total calculado por el servidor y estado **Pendiente de pago**.
+5. Coordinar QR o transferencia desde el botón de WhatsApp de la confirmación.
+
+El negocio consulta los pedidos y cambia sus estados en `/admin/pedidos`. También puede consultar las solicitudes de eventos. No se realizan cobros ni se envían correos automáticamente.
+
+## Comprobaciones
+
+```powershell
+npm.cmd test
+npm.cmd run typecheck
+npm.cmd run lint
+npm.cmd run build
+npm.cmd start
+```
+
+El desarrollo usa `.next-dev` y producción usa `.next` para que no se sobrescriban sus archivos. Las tipografías se sirven localmente; las imágenes de muestra provienen de Unsplash.
+
+## Configuración de contenido
+
+- `lib/catalog.ts`: productos, fotografías, variantes y disponibilidad.
+- `lib/constants.ts`: datos de negocio, WhatsApp, zonas, tarifas y horarios.
+- `lib/delivery.ts`: reglas de fechas y franjas en `America/La_Paz`.
+- `lib/orders.ts`: contrato de pedidos y cálculo de importes.
+- `lib/server/order-store.ts`: almacenamiento de pedidos y consultas.
+
+## Antes de publicar
+
+Esta implementación requiere un **servidor Node con disco persistente y HTTPS**. Configura `ORDERS_DB_PATH` en un volumen persistente y `ADMIN_PASSWORD` con al menos 16 caracteres. SQLite local no sirve para el disco efímero de funciones serverless; en ese entorno se necesita un adaptador para una base alojada.
+
+Validar fotos, productos, precios, contactos, zonas de entrega y políticas con el negocio: el catálogo original contiene datos de ejemplo. No se ha publicado ni desplegado el proyecto.
+
+Consulta [MVP.md](MVP.md) para operación, respaldos, alcance y criterios de entrega.

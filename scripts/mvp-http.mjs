@@ -1,0 +1,34 @@
+import assert from 'node:assert/strict';
+import { randomUUID } from 'node:crypto';
+
+// Ejecutar exclusivamente contra el servidor de QA con base aislada.
+const base = process.env.MVP_TEST_BASE_URL;
+if (!base || !process.env.MVP_TEST_ADMIN_PASSWORD) throw new Error('Configura MVP_TEST_BASE_URL y MVP_TEST_ADMIN_PASSWORD para el servidor de QA.');
+const post = (path, data, options = {}) => fetch(`${base}${path}`, { method: 'POST', headers: { 'Content-Type': 'application/json', ...options.headers }, body: JSON.stringify(data), ...options });
+const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/La_Paz', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
+const date = new Date(`${today}T12:00:00Z`);
+date.setUTCDate(date.getUTCDate() + 1);
+if (date.getUTCDay() === 0) date.setUTCDate(date.getUTCDate() + 1);
+const data = { requestId: randomUUID(), buyer: { name: 'QA HTTP', email: 'qa@example.com', phone: '+59170000000' }, delivery: { recipientName: 'Destinatario QA', recipientPhone: '+59170000001', zoneId: 'centro', address: 'Direccion QA 123', date: date.toISOString().slice(0, 10), slotId: '10-12' }, payment: { method: 'transfer' }, items: [{ productId: 'p-001', variantId: 'jr-s', qty: 1, message: 'Prueba HTTP' }], totals: { total: 1 } };
+assert.equal((await fetch(`${base}/coleccion`)).status, 200);
+assert.equal((await post('/api/checkout', {})).status, 400);
+assert.equal((await post('/api/checkout', { ...data, items: [{ ...data.items[0], productId: 'inexistente' }] })).status, 409);
+const responses = await Promise.all([post('/api/checkout', data), post('/api/checkout', data)]);
+assert.ok(responses.every(r => r.ok));
+const [first, retry] = await Promise.all(responses.map(r => r.json()));
+assert.equal(first.orderId, retry.orderId);
+assert.equal(first.totals.total, 300);
+const receipt = `/checkout/confirmacion?id=${encodeURIComponent(first.orderId)}&token=${first.accessToken}`;
+assert.equal((await fetch(base + receipt)).status, 200);
+assert.equal((await fetch(`${base}/checkout/confirmacion?id=${first.orderId}&token=invalid`)).status, 404);
+assert.equal((await post('/api/admin/session', { password: 'incorrecta' })).status, 401);
+const login = await post('/api/admin/session', { password: process.env.MVP_TEST_ADMIN_PASSWORD });
+assert.equal(login.status, 200);
+const cookie = login.headers.get('set-cookie').split(';')[0];
+assert.ok((await (await fetch(`${base}/admin/pedidos`, { headers: { Cookie: cookie } })).text()).includes(first.orderId));
+const patch = await fetch(`${base}/api/admin/orders`, { method: 'PATCH', headers: { 'Content-Type': 'application/json', Cookie: cookie }, body: JSON.stringify({ id: first.orderId, status: 'confirmed' }) });
+assert.equal(patch.status, 200);
+assert.ok((await (await fetch(base + receipt)).text()).includes('Pago confirmado'));
+assert.equal((await fetch(`${base}/api/admin/orders`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: first.orderId, status: 'delivered' }) })).status, 401);
+assert.equal((await post('/api/admin/session', { password: process.env.MVP_TEST_ADMIN_PASSWORD }, { headers: { 'Content-Type': 'application/json', Origin: 'https://otro.example' } })).status, 403);
+console.log('HTTP OK: catálogo, validación, precios, reintentos concurrentes, confirmación privada, login, actualización y acceso denegado.');
