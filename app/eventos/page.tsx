@@ -7,7 +7,7 @@ import { eventStories } from '@/lib/events';
 export const metadata: Metadata = {
   title: 'Eventos',
   description:
-    'Diseño floral para bodas, eventos corporativos y celebraciones en Cochabamba. Consulta sin costo.'
+    'Inspiración floral y consultas para ocasiones especiales en Cochabamba.'
 };
 
 export default function EventosPage() {
@@ -21,9 +21,7 @@ export default function EventosPage() {
             <em className="italic text-clay">momentos que importan</em>.
           </h1>
           <p className="mt-6 text-base md:text-lg text-muted max-w-prose mx-auto leading-relaxed">
-            Trabajamos con novias, familias y equipos corporativos en Cochabamba y los valles.
-            Hacemos una primera conversación sin costo, luego una propuesta con moodboard
-            y cerramos con un montaje cuidado el día del evento.
+            Comparte tu idea para consultar disponibilidad y alcance. Las imágenes de esta página son referencias visuales, no un portafolio de trabajos realizados por Norah’s Garden.
           </p>
         </Container>
       </section>
@@ -64,7 +62,7 @@ export default function EventosPage() {
             <div>
               <span className="eyebrow mb-3">Cómo trabajamos</span>
               <h2 className="font-serif text-3xl md:text-4xl tracking-editorial leading-tight mb-5">
-                Tres pasos, sin sorpresas.
+                Conversemos sobre tu idea.
               </h2>
               <ol className="space-y-5 text-sm">
                 <li className="flex gap-4">
@@ -77,15 +75,15 @@ export default function EventosPage() {
                 <li className="flex gap-4">
                   <span className="w-8 h-8 rounded-full bg-forest text-cream inline-flex items-center justify-center font-serif shrink-0">2</span>
                   <div>
-                    <p className="font-serif text-base text-forest">Propuesta moodboard</p>
-                    <p className="text-muted mt-1">Te enviamos una propuesta visual con flores, paleta y referencias en 48 h.</p>
+                    <p className="font-serif text-base text-forest">Propuesta a coordinar</p>
+                    <p className="text-muted mt-1">El alcance, presupuesto y plazo de una propuesta se acuerdan según disponibilidad.</p>
                   </div>
                 </li>
                 <li className="flex gap-4">
                   <span className="w-8 h-8 rounded-full bg-forest text-cream inline-flex items-center justify-center font-serif shrink-0">3</span>
                   <div>
-                    <p className="font-serif text-base text-forest">Montaje el día del evento</p>
-                    <p className="text-muted mt-1">Nuestro equipo llega con anticipación, instala y se retira sin dejar rastro.</p>
+                    <p className="font-serif text-base text-forest">Confirmación del servicio</p>
+                    <p className="text-muted mt-1">Consulta si se ofrece montaje y acuerda sus condiciones y costo antes de contratar.</p>
                   </div>
                 </li>
               </ol>

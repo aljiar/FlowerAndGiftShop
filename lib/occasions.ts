@@ -39,7 +39,7 @@ export const occasions: Occasion[] = [
     slug: 'condolencias',
     name: 'Condolencias',
     blurb:
-      'Composiciones sobrias, en tonos blancos y verdes, enviadas con respeto y a tiempo.',
+      'Ideas de composiciones sobrias, en tonos blancos y verdes. Consulta disponibilidad y fecha de entrega.',
     coverImage:
       'https://images.unsplash.com/photo-1485955900006-10f4d324d411?auto=format&fit=crop&w=1600&q=80',
     coverAlt: 'Arreglo blanco y verde para condolencias',
@@ -61,7 +61,7 @@ export const occasions: Occasion[] = [
     slug: 'corporativo',
     name: 'Corporativo',
     blurb:
-      'Recepciones, oficinas y regalos empresariales. Diseñamos piezas a medida con factura.',
+      'Ideas para recepciones, oficinas y regalos empresariales. Consulta opciones y condiciones.',
     coverImage:
       'https://images.unsplash.com/photo-1487070183336-b863922373d4?auto=format&fit=crop&w=1600&q=80',
     coverAlt: 'Centro de mesa corporativo',

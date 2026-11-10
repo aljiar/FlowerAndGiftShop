@@ -93,7 +93,7 @@ export function ProductBuyBox({ product }: Props) {
       <Textarea
         label="Mensaje para la tarjeta (opcional)"
         name="message"
-        placeholder="Escribe hasta 180 caracteres. Lo escribiremos a mano sobre tarjeta reciclada."
+        placeholder="Escribe hasta 180 caracteres. Consulta las opciones de tarjeta al coordinar."
         value={message}
         onChange={(e) => setMessage(e.target.value.slice(0, 180))}
         maxLength={180}
@@ -101,7 +101,7 @@ export function ProductBuyBox({ product }: Props) {
         hint={`${message.length}/180`}
       />
 
-      <p className="text-sm text-muted">Elige la dirección, fecha y franja de entrega en el checkout. Todos los arreglos del pedido se entregan juntos.</p>
+      <p className="text-sm text-muted">Catálogo de ejemplo. Consulta disponibilidad, dirección y fecha por WhatsApp antes de pagar; agregar al carrito no reserva el producto.</p>
 
       {/* CTA */}
       <div className="flex flex-col sm:flex-row gap-2 pt-2">
@@ -130,20 +130,19 @@ export function ProductBuyBox({ product }: Props) {
         <li className="flex items-start gap-3">
           <Truck size={14} strokeWidth={1.5} className="mt-0.5 text-clay shrink-0" />
           <span>
-            Entrega el mismo día en {site.city} si confirmas antes de las 14:00 hora local. Te enviamos
-            foto del arreglo antes de salir.
+            Entrega en {site.city} a coordinar. Confirma disponibilidad, plazo y tarifa por WhatsApp antes de pagar.
           </span>
         </li>
         <li className="flex items-start gap-3">
           <Calendar size={14} strokeWidth={1.5} className="mt-0.5 text-clay shrink-0" />
           <span>
-            Elige una fecha dentro de los próximos siete días. Domingos no hay reparto.
+            Consulta las fechas disponibles. La selección de una fecha no reserva una entrega.
           </span>
         </li>
         <li className="flex items-start gap-3">
           <Clock size={14} strokeWidth={1.5} className="mt-0.5 text-clay shrink-0" />
           <span>
-            El costo de entrega se calcula según la zona y se muestra antes de confirmar el pedido.
+            Zonas y tarifas de entrega pendientes de definir; acordaremos el total antes del pago.
           </span>
         </li>
       </ul>

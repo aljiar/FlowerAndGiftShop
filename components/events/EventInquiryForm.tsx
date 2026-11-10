@@ -46,7 +46,7 @@ export function EventInquiryForm() {
           <p className="font-serif text-lg">Consulta enviada.</p>
         </div>
         <p className="text-sm text-muted leading-relaxed">
-          Te respondemos en menos de 24 h por correo o WhatsApp. Si prefieres, escríbenos
+          Tu consulta quedó registrada para revisión manual. La disponibilidad aún debe confirmarse. Si prefieres, escríbenos
           directamente a{' '}
           <a href={whatsappLink('Hola, quiero consultar sobre un evento.')} className="text-clay underline">
             {site.whatsapp}
@@ -96,7 +96,7 @@ export function EventInquiryForm() {
         {busy ? 'Guardando…' : 'Enviar consulta'} <ArrowRight size={14} strokeWidth={1.5} />
       </Button>
       <p className="text-xs text-muted text-center">
-        La consulta es sin costo. Te respondemos en menos de 24 h.
+        Enviar una consulta no confirma disponibilidad ni contrata un servicio.
       </p>
     </form>
   );

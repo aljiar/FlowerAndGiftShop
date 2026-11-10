@@ -2,6 +2,10 @@
 
 MVP de tienda floral con Next.js, TypeScript, Tailwind, carrito persistente y checkout con pedidos guardados en SQLite.
 
+## Estado comercial
+
+Tienda en preparación. El catálogo es de ejemplo y los pedidos web están deshabilitados. Atención por WhatsApp confirmado: +591 74309070. Consulta [P0.md](P0.md) para datos validados y pendientes antes de habilitar ventas.
+
 ## Ejecutar localmente
 
 Requiere Node.js **22.13 o superior**; recomendado Node.js 24.

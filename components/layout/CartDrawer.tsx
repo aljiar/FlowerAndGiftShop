@@ -72,7 +72,7 @@ export function CartDrawer() {
             <div>
               <p className="font-serif text-xl mb-1">Tu carrito está vacío</p>
               <p className="text-sm text-muted max-w-xs">
-                Empieza con un arreglo pensado para hoy. Entrega en 2–4 h en Cochabamba.
+                Explora los arreglos y consulta disponibilidad y entrega antes de pagar.
               </p>
             </div>
             <Link
@@ -160,7 +160,7 @@ export function CartDrawer() {
                 </div>
                 <div className="flex justify-between text-muted">
                   <span>Delivery</span>
-                  <span className="text-xs">Calculado en checkout</span>
+                  <span className="text-xs">A coordinar por WhatsApp</span>
                 </div>
 
               </div>
@@ -173,7 +173,7 @@ export function CartDrawer() {
                 onClick={close}
                 className="flex items-center justify-center gap-2 w-full bg-forest text-cream text-xs uppercase tracking-wider px-6 h-12 rounded-sm hover:bg-forest-soft"
               >
-                Continuar al checkout <ArrowRight size={14} strokeWidth={1.5} />
+                Revisar pedido <ArrowRight size={14} strokeWidth={1.5} />
               </Link>
               <button
                 type="button"

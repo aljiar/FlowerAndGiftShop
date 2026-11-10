@@ -8,7 +8,7 @@ import { products } from '@/lib/catalog';
 export const metadata: Metadata = {
   title: 'Colección',
   description:
-    'Explora arreglos florales de autor en Cochabamba. Filtra por tipo de flor, ocasión y precio.'
+    'Explora el catálogo de muestra de Norah’s Garden en Cochabamba.'
 };
 
 export default function ColeccionPage() {
@@ -20,7 +20,7 @@ export default function ColeccionPage() {
             as="h1"
             eyebrow="Colección"
             title="Encuentra un arreglo para tu ocasión."
-            description="Explora flores, tamaños y precios. Las fotografías actuales son de referencia; consulta la composición antes de confirmar el pago."
+            description="Catálogo de ejemplo: las fotos, productos y precios son de referencia. Consulta las opciones reales por WhatsApp antes de pagar."
           />
         </div>
 

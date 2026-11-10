@@ -5,7 +5,7 @@ import { TopBar } from '@/components/layout/TopBar';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { CartDrawer } from '@/components/layout/CartDrawer';
-import { site } from '@/lib/constants';
+import { site, commerceReady } from '@/lib/constants';
 
 const inter = localFont({
   src: [
@@ -31,18 +31,19 @@ const playfair = localFont({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(site.url),
+  metadataBase: site.url ? new URL(site.url) : undefined,
+  robots: commerceReady ? { index: true, follow: true } : { index: false, follow: false },
   title: {
-    default: `${site.name} — Florería de autor en ${site.city}`,
+    default: `${site.name} — Flores y regalos en ${site.city}`,
     template: `%s · ${site.name}`
   },
   description: site.description,
   openGraph: {
     type: 'website',
     locale: 'es_BO',
-    url: site.url,
+    url: site.url || undefined,
     siteName: site.name,
-    title: `${site.name} — Florería de autor en ${site.city}`,
+    title: `${site.name} — Flores y regalos en ${site.city}`,
     description: site.description
   },
   twitter: { card: 'summary_large_image' },
@@ -60,6 +61,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="es-BO" className={`${inter.variable} ${playfair.variable}`}>
       <body className="min-h-screen flex flex-col">
         <TopBar />
+        {!commerceReady && <div className="bg-ivory border-b border-line px-5 py-3 text-center text-sm">Tienda en preparación · Catálogo y precios de ejemplo. Consulta opciones reales por WhatsApp antes de pagar.</div>}
         <Header />
         <CartDrawer />
         <main className="flex-1">{children}</main>

@@ -77,7 +77,7 @@ export default function OccasionPage({ params }: { params: { slug: string } }) {
           ) : (
             <>
               <p className="text-sm text-muted mb-8">
-                {list.length} {list.length === 1 ? 'arreglo disponible' : 'arreglos disponibles'}
+                {list.length} {list.length === 1 ? 'arreglo de muestra' : 'arreglos de muestra'}
               </p>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-10 md:gap-x-6 md:gap-y-14">
                 {list.map((p, i) => (

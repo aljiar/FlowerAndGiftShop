@@ -15,14 +15,14 @@ export function EventsTeaser() {
           <div className="lg:col-span-5 lg:sticky lg:top-28 self-start">
             <SectionTitle
               eyebrow="Eventos"
-              title="Diseño floral para bodas, eventos y oficinas."
-              description="Acompañamos a novias, equipos y familias con arreglos pensados a medida. Trabajamos con tu paleta, tu presupuesto y tus tiempos."
+              title="Ideas florales para una ocasión especial."
+              description="Referencias visuales para conversar sobre tus ideas. Estas imágenes no representan eventos realizados por Norah’s Garden. Consulta el alcance y la disponibilidad del servicio."
             />
             <ul className="mt-8 space-y-3 text-sm text-forest/80">
               {[
-                'Consulta inicial sin costo',
-                'Propuesta moodboard en 48 h',
-                'Montaje el día del evento incluido'
+                'Disponibilidad a consultar',
+                'Propuesta sujeta a confirmación',
+                'Servicios y costos a acordar'
               ].map((t) => (
                 <li key={t} className="flex items-center gap-3">
                   <span className="w-5 h-5 rounded-full border border-clay/40 flex items-center justify-center text-clay text-xs">✓</span>
@@ -34,7 +34,7 @@ export function EventsTeaser() {
               href="/eventos"
               className="mt-8 inline-flex items-center gap-2 bg-forest text-cream text-xs uppercase tracking-wider px-6 h-11 rounded-sm hover:bg-forest-soft"
             >
-              Agenda una consulta <ArrowUpRight size={14} strokeWidth={1.5} />
+              Consultar una idea <ArrowUpRight size={14} strokeWidth={1.5} />
             </Link>
           </div>
 

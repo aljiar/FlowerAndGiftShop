@@ -1,9 +1,10 @@
 import type { MetadataRoute } from 'next';
-import { site } from '@/lib/constants';
+import { site, commerceReady } from '@/lib/constants';
 import { products } from '@/lib/catalog';
 import { occasions } from '@/lib/occasions';
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  if (!commerceReady) return [];
   const now = new Date();
   const base = site.url;
   return [

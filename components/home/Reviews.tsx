@@ -5,6 +5,7 @@ import { reviews, averageRating } from '@/lib/reviews';
 import { occasionBySlug } from '@/lib/occasions';
 
 export function Reviews() {
+  if (!reviews.length) return null;
   const featured = reviews.slice(0, 4);
   return (
     <section className="bg-ivory/40 py-section md:py-section-md">
@@ -13,15 +14,15 @@ export function Reviews() {
           <div className="lg:col-span-7">
             <SectionTitle
               eyebrow="Lo que dicen"
-              title="Reseñas reales de quien envió y de quien recibió."
-              description="Recogemos testimonios después de cada entrega. No editamos más que puntuación y ortografía."
+              title="Experiencias de nuestros clientes."
+              description="Testimonios compartidos con autorización."
             />
           </div>
           <div className="lg:col-span-5 flex items-center gap-4 lg:justify-end">
             <div>
               <p className="font-serif text-5xl text-forest">{averageRating.toFixed(1)}</p>
               <RatingStars value={averageRating} showValue={false} />
-              <p className="text-xs text-muted mt-1">Basado en {reviews.length} reseñas verificadas</p>
+              <p className="text-xs text-muted mt-1">Basado en {reviews.length} testimonios</p>
             </div>
           </div>
         </div>

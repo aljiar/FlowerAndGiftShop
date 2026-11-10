@@ -22,7 +22,7 @@ export function IntentGrid() {
   ];
 
   return (
-    <section className="bg-cream py-section md:py-section-md">
+    <section id="ocasiones" className="bg-cream py-section md:py-section-md">
       <Container>
         <div className="flex items-end justify-between gap-6 mb-10 md:mb-14">
           <SectionTitle

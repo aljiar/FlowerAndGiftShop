@@ -8,7 +8,7 @@ import { ProductBuyBox } from '@/components/product/ProductBuyBox';
 import { ProductCard } from '@/components/product/ProductCard';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { getProductBySlug, products } from '@/lib/catalog';
-import { site } from '@/lib/constants';
+import { site, commerceReady } from '@/lib/constants';
 
 export function generateStaticParams() {
   return products.map((p) => ({ slug: p.slug }));
@@ -59,7 +59,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
         <Container className="max-w-3xl">
           <span className="eyebrow mb-3">Sobre este arreglo</span>
           <h2 className="font-serif text-2xl md:text-3xl tracking-editorial mb-5">
-            Pensado para durar varios días.
+            Conoce este arreglo.
           </h2>
           <p className="text-muted leading-relaxed text-pretty">{product.longDescription}</p>
 
@@ -70,7 +70,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
               </div>
               <div>
                 <p className="font-serif text-base">Hecho a mano</p>
-                <p className="text-xs text-muted mt-1">Por nuestro equipo en Cala Cala.</p>
+                <p className="text-xs text-muted mt-1">Consulta su composición y elaboración.</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
@@ -78,8 +78,8 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                 <Leaf size={16} strokeWidth={1.25} />
               </div>
               <div>
-                <p className="font-serif text-base">Corte diario</p>
-                <p className="text-xs text-muted mt-1">Frescura de 5–7 días en casa.</p>
+                <p className="font-serif text-base">Composición</p>
+                <p className="text-xs text-muted mt-1">Confirma las flores disponibles.</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
@@ -88,7 +88,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
               </div>
               <div>
                 <p className="font-serif text-base">Entrega cuidada</p>
-                <p className="text-xs text-muted mt-1">Foto antes de salir del taller.</p>
+                <p className="text-xs text-muted mt-1">Coordina los detalles antes de pagar.</p>
               </div>
             </div>
           </div>
@@ -133,7 +133,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
         </section>
       )}
 
-      <JsonLd
+      {commerceReady && <JsonLd
         data={{
           '@context': 'https://schema.org',
           '@type': 'Product',
@@ -150,7 +150,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
             availability: product.inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock'
           }
         }}
-      />
+      />}
     </>
   );
 }

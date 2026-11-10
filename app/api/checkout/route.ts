@@ -1,8 +1,10 @@
+import { commerceReady } from '@/lib/constants';
 import { NextResponse } from 'next/server';
 import { checkoutSchema } from '@/lib/orders';
 import { saveOrder } from '@/lib/server/order-store';
 export const runtime = 'nodejs';
 export async function POST(req: Request) {
+  if (!commerceReady) return NextResponse.json({ error: 'Los pedidos web aún no están habilitados. Consulta disponibilidad y precio por WhatsApp.' }, { status: 503 });
   if (Number(req.headers.get('content-length')) > 65536) return NextResponse.json({ error: 'Pedido demasiado grande.' }, { status: 413 });
   let body: unknown;
   try { body = await req.json(); } catch { return NextResponse.json({ error: 'JSON inválido.' }, { status: 400 }); }

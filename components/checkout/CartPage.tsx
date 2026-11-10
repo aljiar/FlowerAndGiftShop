@@ -143,18 +143,18 @@ export function CartPage() {
           </div>
           <div className="flex justify-between">
             <dt className="text-muted">Delivery</dt>
-            <dd className="text-muted text-xs">Se calcula en checkout</dd>
+            <dd className="text-muted text-xs">A coordinar por WhatsApp</dd>
           </div>
         </dl>
         <div className="border-t border-line mt-4 pt-4 flex justify-between items-baseline">
-          <span className="font-serif text-lg">Total estimado</span>
+          <span className="font-serif text-lg">Subtotal de referencia</span>
           <span className="font-serif text-2xl">{formatPrice(subtotal)}</span>
         </div>
         <Link href="/checkout" className="flex items-center justify-center gap-2 mt-6 bg-clay text-cream px-6 py-4 rounded-sm text-sm uppercase tracking-wider">
-          Ir al checkout <ArrowRight size={14} strokeWidth={1.5} />
+          Revisar pedido <ArrowRight size={14} strokeWidth={1.5} />
         </Link>
         <p className="text-xs text-muted mt-3 text-center">
-          Una dirección y fecha por pedido · Pago coordinado por WhatsApp
+          Precios de ejemplo · Consulta el importe real antes de pagar
         </p>
       </aside>
     </div>

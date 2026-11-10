@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { ArrowRight, Loader2 } from 'lucide-react';
 import { useCartStore } from '@/lib/store/useCartStore';
 import { products } from '@/lib/catalog';
-import { deliveryZones } from '@/lib/constants';
+import { deliveryZones, commerceReady, whatsappLink } from '@/lib/constants';
 import { availableSlots, deliveryDates } from '@/lib/delivery';
 import { checkoutSchema } from '@/lib/orders';
 import { Input, Select, Textarea } from '@/components/ui/Field';
@@ -66,6 +66,7 @@ export function CheckoutForm() {
     } catch (e) { setError(e instanceof TypeError || e instanceof SyntaxError ? 'No pudimos conectar con la tienda. Tu carrito se conserva; vuelve a intentarlo.' : e instanceof Error ? e.message : 'No se pudo guardar tu pedido. Tu carrito se conserva.'); }
     finally { submitting.current = false; setBusy(false); }
   };
+  if (!commerceReady) return <div className="container py-section max-w-2xl"><h1 className="font-serif text-3xl mb-5">Consulta tu regalo por WhatsApp</h1><p className="text-muted mb-6">El catálogo y sus precios son de ejemplo. Estamos definiendo zonas y tarifas, por lo que aún no recibimos pedidos desde la web. Tu carrito se conserva. Consulta disponibilidad y el importe total antes de pagar por QR o transferencia.</p><a className="inline-flex bg-forest text-cream px-6 py-4 rounded-sm" href={whatsappLink('Hola, quiero consultar disponibilidad, precio y entrega de un regalo de Norah’s Garden.')} target="_blank" rel="noreferrer">Consultar por WhatsApp</a><Link href="/carrito" className="block underline mt-5">Volver al carrito</Link></div>;
   if (!hydrated) return <div className="container py-section" role="status">Cargando tu pedido…</div>;
   if (!items.length) return <div className="container py-section text-center"><h1 className="font-serif text-3xl mb-5">Tu carrito está vacío</h1><Link href="/coleccion" className="underline">Explorar arreglos</Link></div>;
   return <div className="container py-section grid lg:grid-cols-[1fr_380px] gap-10">

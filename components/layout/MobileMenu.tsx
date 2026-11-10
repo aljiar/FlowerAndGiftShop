@@ -87,16 +87,7 @@ export function MobileMenu({ open, onClose }: Props) {
 
           <div className="pt-4 border-t border-line space-y-2 text-sm text-muted">
             <p>{site.hours}</p>
-            <p>
-              <a href={`tel:${site.phone.replace(/\s/g, '')}`} className="hover:text-forest">
-                {site.phone}
-              </a>
-            </p>
-            <p>
-              <a href={`mailto:${site.email}`} className="hover:text-forest">
-                {site.email}
-              </a>
-            </p>
+
           </div>
         </nav>
 
@@ -106,7 +97,7 @@ export function MobileMenu({ open, onClose }: Props) {
             onClick={onClose}
             className="flex items-center justify-between text-sm font-medium uppercase tracking-wider text-cream bg-clay hover:bg-clay-hover rounded-sm px-5 h-11"
           >
-            Enviar flores hoy <ArrowRight size={16} strokeWidth={1.5} />
+            Explorar catálogo <ArrowRight size={16} strokeWidth={1.5} />
           </Link>
         </div>
       </div>

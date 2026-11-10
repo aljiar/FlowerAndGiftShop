@@ -1,9 +1,18 @@
 import type { DeliveryZone, TimeSlot } from '@/types';
 
+function configuredOrigin(value: string | undefined): string {
+  try {
+    const url = new URL(value || '');
+    return url.protocol === 'https:' && !url.username && !url.password ? url.origin : '';
+  } catch {
+    return '';
+  }
+}
+
 export const site = {
   // Nombre público: se utiliza en navegación, páginas y metadatos.
   name: "Norah's Garden",
-  tagline: 'Florería de autor',
+  tagline: 'Flores y regalos',
   city: 'Cochabamba',
   country: 'Bolivia',
   countryCode: 'BO',
@@ -12,22 +21,22 @@ export const site = {
   currency: 'BOB',
   currencySymbol: 'Bs',
   description:
-    'Arreglos florales de autor con entrega el mismo día en Cochabamba. Flores frescas de corte, diseño contemporáneo y atención por WhatsApp.',
-  url: 'https://petalo.bo',
+    'Flores y regalos para momentos especiales en Cochabamba. Tienda online en preparación, con atención por WhatsApp.',
+  url: configuredOrigin(process.env.NEXT_PUBLIC_SITE_URL),
   whatsapp: '+591 74309070',
   whatsappRaw: '+59174309070',
-  phone: '+591 4 453 2109',
-  email: 'hola@petalo.bo',
-  address: 'Av. Ballivián #745, Cala Cala, Cochabamba',
+  phone: '',
+  email: '',
+  address: 'Atención 100% online · Cochabamba',
   hours: 'Lunes a sábado · 09:00 a 20:00',
-  founded: 2019,
   social: {
-    instagram: 'https://instagram.com/petalo.bo',
-    pinterest: 'https://pinterest.com/petalo.bo',
-    facebook: 'https://facebook.com/petalo.bo'
+    instagram: '',
+    pinterest: '',
+    facebook: ''
   }
 };
 
+// Configuración de demostración: validar zonas, tarifas y umbrales antes de activar pedidos.
 export const deliveryZones: DeliveryZone[] = [
   { id: 'centro', name: 'Cochabamba centro', eta: '2 – 3 h', fee: 15, freeFrom: 280 },
   { id: 'norte', name: 'Zona norte · Cala Cala, Tiquipaya', eta: '2 – 4 h', fee: 20, freeFrom: 350 },
@@ -47,12 +56,15 @@ export const timeSlots: TimeSlot[] = [
 export const priceRange = { min: 120, max: 1200 };
 
 export const navLinks = [
-  { href: '/coleccion', label: 'Enviar hoy' },
-  { href: '/coleccion?occasion=cumpleanos', label: 'Por ocasión' },
-  { href: '/coleccion', label: 'Colección' },
+  { href: '/coleccion', label: 'Catálogo' },
+  { href: '/#ocasiones', label: 'Por ocasión' },
+  { href: '/contacto', label: 'Cómo comprar' },
   { href: '/eventos', label: 'Eventos' },
   { href: '/nosotros', label: 'Nosotros' }
 ];
 
 export const whatsappLink = (text: string) =>
   `https://wa.me/${site.whatsappRaw.replace(/\D/g, '')}?text=${encodeURIComponent(text)}`;
+
+// Activar solo después de validar catálogo, fotos, precios, cobertura y políticas.
+export const commerceReady = process.env.NEXT_PUBLIC_COMMERCE_READY === 'true' && Boolean(site.url);

@@ -1,5 +1,9 @@
 # MVP Norah's Garden
 
+## Estado comercial actual
+
+La tienda está en preparación. El catálogo y la configuración de entrega son de ejemplo; el checkout web está bloqueado y deriva a consultas por WhatsApp. El flujo de pedidos descrito abajo corresponde al motor implementado, cuya activación requiere completar [P0.md](P0.md).
+
 ## Alcance implementado
 
 - Catálogo, filtros, fichas, tamaños, precios y disponibilidad desde `lib/catalog.ts`.
