@@ -11,9 +11,9 @@ export function FeaturedGrid() {
       <Container>
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10 md:mb-14">
           <SectionTitle
-            eyebrow="Selección del taller"
+            eyebrow="Catálogo de muestra"
             title="Arreglos destacados"
-            description="Una pequeña muestra de lo que podemos armar esta semana. La disponibilidad cambia según la flor y la temporada."
+            description="Explora estilos y tamaños de referencia. Consulta las opciones reales y su disponibilidad por WhatsApp."
           />
           <Link
             href="/coleccion"

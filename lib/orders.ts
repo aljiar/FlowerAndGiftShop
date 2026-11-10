@@ -7,7 +7,7 @@ const text = (min: number, max: number) => z.string().trim().min(min).max(max);
 const phone = text(7, 24).regex(/^\+?[\d\s()-]+$/, 'Teléfono inválido').refine(value => value.replace(/\D/g, '').length >= 7, 'Teléfono incompleto');
 export const checkoutSchema = z.object({
   requestId: z.string().uuid(),
-  buyer: z.object({ name: text(2, 100), email: z.string().trim().email().max(254), phone }),
+  buyer: z.object({ name: text(2, 100), email: z.string().trim().email().max(254).or(z.literal('')).optional(), phone }),
   delivery: z.object({ recipientName: text(2, 100), recipientPhone: phone, zoneId: text(1, 40), address: text(5, 300), references: text(0, 300).optional(), date: text(10, 10), slotId: text(1, 20) }),
   notes: text(0, 500).optional(), payment: z.object({ method: z.enum(['qr', 'transfer']) }),
   items: z.array(z.object({ productId: text(1, 100), variantId: text(1, 100), qty: z.number().int().min(1).max(99), message: text(0, 180).optional() })).min(1).max(50)

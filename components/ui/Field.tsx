@@ -1,8 +1,8 @@
-import { forwardRef, type InputHTMLAttributes, type TextareaHTMLAttributes } from 'react';
+import { forwardRef, useId, type InputHTMLAttributes, type TextareaHTMLAttributes } from 'react';
 import { cn } from '@/lib/cva';
 
 const baseField =
-  'w-full bg-cream border border-line rounded-sm px-4 py-3 text-sm text-forest placeholder:text-muted/70 focus:border-forest focus:outline-none transition-colors';
+  'w-full bg-cream border border-line rounded-sm px-4 py-3 min-h-11 text-base text-forest placeholder:text-muted/70 focus:border-forest focus:outline-none transition-colors';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -12,17 +12,20 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ label, hint, error, id, className, ...props }, ref) => {
-    const inputId = id || props.name;
+    const generatedId = useId();
+    const inputId = id || props.name || generatedId;
+    const descriptionId = hint || error ? `${inputId}-description` : undefined;
+    const describedBy = [props['aria-describedby'], descriptionId].filter(Boolean).join(' ') || undefined;
     return (
       <div className="space-y-1.5">
         {label && (
-          <label htmlFor={inputId} className="block text-xs uppercase tracking-wider text-muted">
+          <label htmlFor={inputId} className="block text-sm font-medium text-forest">
             {label}
           </label>
         )}
-        <input ref={ref} id={inputId} className={cn(baseField, error && 'border-clay', className)} {...props} />
-        {hint && !error && <p className="text-xs text-muted">{hint}</p>}
-        {error && <p className="text-xs text-clay">{error}</p>}
+        <input ref={ref} id={inputId} className={cn(baseField, error && 'border-clay', className)} {...props} aria-invalid={error ? true : props['aria-invalid']} aria-describedby={describedBy} />
+        {hint && !error && <p id={descriptionId} className="text-sm text-muted">{hint}</p>}
+        {error && <p id={descriptionId} className="text-sm text-forest font-medium">{error}</p>}
       </div>
     );
   }
@@ -37,11 +40,14 @@ interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({ label, hint, error, id, className, ...props }, ref) => {
-    const inputId = id || props.name;
+    const generatedId = useId();
+    const inputId = id || props.name || generatedId;
+    const descriptionId = hint || error ? `${inputId}-description` : undefined;
+    const describedBy = [props['aria-describedby'], descriptionId].filter(Boolean).join(' ') || undefined;
     return (
       <div className="space-y-1.5">
         {label && (
-          <label htmlFor={inputId} className="block text-xs uppercase tracking-wider text-muted">
+          <label htmlFor={inputId} className="block text-sm font-medium text-forest">
             {label}
           </label>
         )}
@@ -49,10 +55,10 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           ref={ref}
           id={inputId}
           className={cn(baseField, 'min-h-[120px] resize-y', error && 'border-clay', className)}
-          {...props}
+          {...props} aria-invalid={error ? true : props['aria-invalid']} aria-describedby={describedBy}
         />
-        {hint && !error && <p className="text-xs text-muted">{hint}</p>}
-        {error && <p className="text-xs text-clay">{error}</p>}
+        {hint && !error && <p id={descriptionId} className="text-sm text-muted">{hint}</p>}
+        {error && <p id={descriptionId} className="text-sm text-forest font-medium">{error}</p>}
       </div>
     );
   }
@@ -67,11 +73,14 @@ interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
   ({ label, hint, error, id, className, children, ...props }, ref) => {
-    const inputId = id || props.name;
+    const generatedId = useId();
+    const inputId = id || props.name || generatedId;
+    const descriptionId = hint || error ? `${inputId}-description` : undefined;
+    const describedBy = [props['aria-describedby'], descriptionId].filter(Boolean).join(' ') || undefined;
     return (
       <div className="space-y-1.5">
         {label && (
-          <label htmlFor={inputId} className="block text-xs uppercase tracking-wider text-muted">
+          <label htmlFor={inputId} className="block text-sm font-medium text-forest">
             {label}
           </label>
         )}
@@ -84,12 +93,12 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
             error && 'border-clay',
             className
           )}
-          {...props}
+          {...props} aria-invalid={error ? true : props['aria-invalid']} aria-describedby={describedBy}
         >
           {children}
         </select>
-        {hint && !error && <p className="text-xs text-muted">{hint}</p>}
-        {error && <p className="text-xs text-clay">{error}</p>}
+        {hint && !error && <p id={descriptionId} className="text-sm text-muted">{hint}</p>}
+        {error && <p id={descriptionId} className="text-sm text-forest font-medium">{error}</p>}
       </div>
     );
   }

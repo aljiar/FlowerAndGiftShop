@@ -8,6 +8,8 @@ import { ProductBuyBox } from '@/components/product/ProductBuyBox';
 import { ProductCard } from '@/components/product/ProductCard';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { getProductBySlug, products } from '@/lib/catalog';
+import { categoryName } from '@/lib/categories';
+import { formatPrice } from '@/lib/format';
 import { site, commerceReady } from '@/lib/constants';
 
 export function generateStaticParams() {
@@ -48,6 +50,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
             <span className="text-forest">{product.name}</span>
           </nav>
 
+          <div className="lg:hidden mb-6"><p className="eyebrow mb-3">{categoryName(product.category)}</p><h1 className="font-serif text-3xl mb-3">{product.name}</h1><p className="text-base">Desde {formatPrice(Math.min(...product.variants.map(variant => product.basePrice + variant.priceDelta)))}</p></div>
           <div className="grid lg:grid-cols-2 gap-10 lg:gap-16">
             <ProductGallery images={product.images} />
             <ProductBuyBox product={product} />

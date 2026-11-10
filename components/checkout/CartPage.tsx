@@ -2,9 +2,11 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { X, Plus, Minus, ArrowRight, ShoppingBag } from 'lucide-react';
+import { X, ArrowRight, ShoppingBag } from 'lucide-react';
 import { useCartStore } from '@/lib/store/useCartStore';
 import { products } from '@/lib/catalog';
+import { QuantityControl } from '@/components/ui/QuantityControl';
+import { DeliveryEstimate } from './DeliveryEstimate';
 import { formatPrice } from '@/lib/format';
 
 export function CartPage() {
@@ -40,9 +42,9 @@ export function CartPage() {
           </div>
           <h1 className="font-serif text-3xl mb-3">Tu carrito está vacío</h1>
           <p className="text-muted leading-relaxed mb-8">
-            Empieza con un arreglo pensado para hoy. Hacemos entregas en 2 a 4 horas en {`Cochabamba`}.
+            Explora flores y regalos, y consulta disponibilidad y entrega por WhatsApp.
           </p>
-          <Link href="/coleccion" className="inline-flex items-center gap-2 bg-clay text-cream px-6 py-4 rounded-sm text-sm">
+          <Link href="/coleccion" className="inline-flex items-center gap-2 bg-forest text-cream px-5 py-4 rounded-sm text-sm">
             Explorar colección <ArrowRight size={16} strokeWidth={1.5} />
           </Link>
         </div>
@@ -58,19 +60,19 @@ export function CartPage() {
 
         <ul className="divide-y divide-line border-t border-b border-line">
           {lineItems.map(({ item, product, variant, unit }) => (
-            <li key={item.id} className="py-5 flex gap-4">
+            <li key={item.id} className="py-5 flex gap-3 sm:gap-4">
               <Link
                 href={`/producto/${product.slug}`}
-                className="relative w-24 h-28 shrink-0 rounded-sm overflow-hidden bg-ivory"
+                className="relative w-16 h-20 sm:w-24 sm:h-28 shrink-0 rounded-sm overflow-hidden bg-ivory"
               >
-                <Image src={product.images[0].url} alt={product.images[0].alt} fill sizes="96px" className="object-cover" />
+                <Image src={product.images[0].url} alt={product.images[0].alt} fill sizes="(min-width: 640px) 96px, 64px" className="object-cover" />
               </Link>
               <div className="flex-1 min-w-0">
                 <div className="flex justify-between gap-3">
                   <div>
                     <Link
                       href={`/producto/${product.slug}`}
-                      className="font-serif text-lg text-forest hover:text-clay line-clamp-1"
+                      className="font-serif text-lg text-forest hover:text-clay break-words"
                     >
                       {product.name}
                     </Link>
@@ -79,7 +81,7 @@ export function CartPage() {
                   <button
                     type="button"
                     onClick={() => remove(item.id)}
-                    className="p-1 text-muted hover:text-clay self-start"
+                    className="w-11 h-11 inline-flex items-center justify-center text-forest hover:bg-ivory self-start shrink-0"
                     aria-label={`Quitar ${product.name}`}
                   >
                     <X size={14} strokeWidth={1.5} />
@@ -95,31 +97,11 @@ export function CartPage() {
                   }
                   rows={2}
                   maxLength={180}
-                  className="mt-2 w-full bg-cream border border-line rounded-sm px-3 py-2 text-xs"
+                  className="mt-2 w-full bg-cream border border-line rounded-sm px-3 py-2 text-base"
                 />
 
-                <div className="flex items-center justify-between mt-4">
-                  <div className="inline-flex items-center border border-line rounded-sm">
-                    <button
-                      type="button"
-                      aria-label="Reducir cantidad"
-                      onClick={() =>
-                        update(item.id, { qty: Math.max(1, item.qty - 1) })
-                      }
-                      className="w-8 h-8 flex items-center justify-center text-forest/70 hover:bg-ivory"
-                    >
-                      <Minus size={12} strokeWidth={1.5} />
-                    </button>
-                    <span className="w-8 text-center text-sm">{item.qty}</span>
-                    <button
-                      type="button"
-                      aria-label="Aumentar cantidad"
-                      onClick={() => update(item.id, { qty: Math.min(99, item.qty + 1) })}
-                      className="w-8 h-8 flex items-center justify-center text-forest/70 hover:bg-ivory"
-                    >
-                      <Plus size={12} strokeWidth={1.5} />
-                    </button>
-                  </div>
+                <div className="flex flex-wrap items-center justify-between gap-3 mt-4">
+                  <QuantityControl value={item.qty} onChange={qty => update(item.id, { qty })} label={`${product.name}, ${variant.label}`} />
                   <p className="font-serif text-base">{formatPrice(unit * item.qty)}</p>
                 </div>
               </div>
@@ -150,6 +132,7 @@ export function CartPage() {
           <span className="font-serif text-lg">Subtotal de referencia</span>
           <span className="font-serif text-2xl">{formatPrice(subtotal)}</span>
         </div>
+        <div className="mt-5"><DeliveryEstimate subtotal={subtotal} /></div>
         <Link href="/checkout" className="flex items-center justify-center gap-2 mt-6 bg-clay text-cream px-6 py-4 rounded-sm text-sm uppercase tracking-wider">
           Revisar pedido <ArrowRight size={14} strokeWidth={1.5} />
         </Link>

@@ -4,8 +4,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useEffect, useRef } from 'react';
 import { useModal } from '@/lib/useModal';
-import { X, Plus, Minus, ArrowRight } from 'lucide-react';
+import { X, ArrowRight } from 'lucide-react';
 import { hydrateCart, useCartStore } from '@/lib/store/useCartStore';
+import { QuantityControl } from '@/components/ui/QuantityControl';
 import { products } from '@/lib/catalog';
 import { formatPrice } from '@/lib/format';
 
@@ -57,7 +58,7 @@ export function CartDrawer() {
               {lineItems.length} {lineItems.length === 1 ? 'arreglo' : 'arreglos'}
             </p>
           </div>
-          <button type="button" onClick={close} className="p-2 text-forest" aria-label="Cerrar carrito">
+          <button type="button" onClick={close} className="w-11 h-11 inline-flex items-center justify-center text-forest" aria-label="Cerrar carrito">
             <X size={20} strokeWidth={1.5} />
           </button>
         </header>
@@ -85,19 +86,19 @@ export function CartDrawer() {
           </div>
         ) : (
           <>
-            <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
+            <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-5 space-y-5">
               {lineItems.map(({ item, product, variant, unit }) => (
-                <article key={item.id} className="flex gap-4 group">
+                <article key={item.id} className="flex gap-2 sm:gap-4 group">
                   <Link
                     href={`/producto/${product.slug}`}
                     onClick={close}
-                    className="relative w-20 h-24 shrink-0 rounded-sm overflow-hidden bg-ivory"
+                    className="relative w-16 h-20 sm:w-20 sm:h-24 shrink-0 rounded-sm overflow-hidden bg-ivory"
                   >
                     <Image
                       src={product.images[0].url}
                       alt={product.images[0].alt}
                       fill
-                      sizes="80px"
+                      sizes="(min-width: 640px) 80px, 64px"
                       className="object-cover"
                     />
                   </Link>
@@ -111,39 +112,15 @@ export function CartDrawer() {
                     </Link>
                     <p className="text-xs text-muted">{variant.label}</p>
                     {item.message && <p className="text-xs text-muted mt-1 line-clamp-2">{item.message}</p>}
-                    <div className="flex items-center justify-between mt-2">
-                      <div className="inline-flex items-center border border-line rounded-sm">
-                        <button
-                          type="button"
-                          aria-label="Reducir cantidad"
-                          onClick={() =>
-                            update(item.id, {
-                              qty: Math.max(1, item.qty - 1)
-                            })
-                          }
-                          className="w-7 h-7 flex items-center justify-center text-forest/70 hover:bg-ivory"
-                        >
-                          <Minus size={12} strokeWidth={1.5} />
-                        </button>
-                        <span className="w-7 text-center text-sm">{item.qty}</span>
-                        <button
-                          type="button"
-                          aria-label="Aumentar cantidad"
-                          onClick={() =>
-                            update(item.id, { qty: Math.min(99, item.qty + 1) })
-                          }
-                          className="w-7 h-7 flex items-center justify-center text-forest/70 hover:bg-ivory"
-                        >
-                          <Plus size={12} strokeWidth={1.5} />
-                        </button>
-                      </div>
+                    <div className="flex flex-wrap items-center justify-between gap-2 mt-2">
+                      <QuantityControl value={item.qty} onChange={qty => update(item.id, { qty })} label={`${product.name}, ${variant.label}`} />
                       <p className="text-sm text-forest">{formatPrice(unit * item.qty)}</p>
                     </div>
                   </div>
                   <button
                     type="button"
                     onClick={() => remove(item.id)}
-                    className="self-start p-1 text-muted hover:text-clay"
+                    className="self-start w-11 h-11 shrink-0 inline-flex items-center justify-center text-forest hover:bg-ivory"
                     aria-label={`Quitar ${product.name}`}
                   >
                     <X size={14} strokeWidth={1.5} />
@@ -152,7 +129,7 @@ export function CartDrawer() {
               ))}
             </div>
 
-            <footer className="border-t border-line px-6 py-5 space-y-4">
+            <footer className="border-t border-line px-5 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))] space-y-4">
               <div className="space-y-1.5 text-sm">
                 <div className="flex justify-between text-muted">
                   <span>Subtotal</span>

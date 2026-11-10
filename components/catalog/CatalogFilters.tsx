@@ -1,346 +1,109 @@
 'use client';
-
+import Link from 'next/link';
 import { useMemo, useState, useEffect, useRef, useCallback } from 'react';
-import { useModal } from '@/lib/useModal';
-import { productPriceRange } from '@/lib/catalog';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Filter, X, SlidersHorizontal } from 'lucide-react';
+import { Filter, X } from 'lucide-react';
+import { useModal } from '@/lib/useModal';
+import { categories } from '@/lib/categories';
+import { whatsappLink } from '@/lib/constants';
+import { emptyFilters, readFilters, filterQuery, filterProducts, flowerLabels, occasionLabels, sortOptions, type FilterSelection } from '@/lib/catalog-filters';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Field';
-import type { FlowerTag, OccasionSlug, Product, VariantSize } from '@/types';
-import { cn } from '@/lib/cva';
+import { ProductCard } from '@/components/product/ProductCard';
+import type { Product } from '@/types';
 
-interface Props {
-  products: Product[];
-  total: number;
-}
-
-const flowerLabels: Record<FlowerTag, string> = {
-  rosas: 'Rosas',
-  peonias: 'Peonías',
-  tulipanes: 'Tulipanes',
-  hortensias: 'Hortensias',
-  girasoles: 'Girasoles',
-  lilis: 'Lilis',
-  lavanda: 'Lavanda',
-  wildflowers: 'Silvestres',
-  suculentas: 'Suculentas',
-  exoticas: 'Exóticas'
-};
-
-const occasionLabels: Record<OccasionSlug, string> = {
-  cumpleanos: 'Cumpleaños',
-  amor: 'Amor',
-  agradecimientos: 'Agradecimientos',
-  condolencias: 'Condolencias',
-  nacimientos: 'Nacimientos',
-  aniversario: 'Aniversario',
-  corporativo: 'Corporativo'
-};
-
-type SortKey = 'relevancia' | 'precio-asc' | 'precio-desc' | 'nuevos';
-
-const sortOptions: Array<{ value: SortKey; label: string }> = [
-  { value: 'relevancia', label: 'Relevancia' },
-  { value: 'nuevos', label: 'Más nuevos' },
-  { value: 'precio-asc', label: 'Precio: menor a mayor' },
-  { value: 'precio-desc', label: 'Precio: mayor a menor' }
-];
-
-function applyFilters(
-  products: Product[],
-  filters: {
-    flowers?: FlowerTag[];
-    occasions?: OccasionSlug[];
-    sizes?: VariantSize[];
-    priceMin?: number;
-    priceMax?: number;
-    sort?: SortKey;
-  }
-) {
-  let list = [...products];
-  if (filters.flowers?.length) {
-    list = list.filter((p) => p.flowers.some((f) => filters.flowers!.includes(f)));
-  }
-  if (filters.occasions?.length) {
-    list = list.filter((p) => p.occasions.some((o) => filters.occasions!.includes(o)));
-  }
-  if (filters.sizes?.length) {
-    list = list.filter((p) => p.variants.some((v) => filters.sizes!.includes(v.size)));
-  }
-  if (typeof filters.priceMin === 'number') {
-    list = list.filter((p) => productPriceRange(p).min >= filters.priceMin!);
-  }
-  if (typeof filters.priceMax === 'number') {
-    list = list.filter((p) => productPriceRange(p).min <= filters.priceMax!);
-  }
-  switch (filters.sort) {
-    case 'precio-asc':
-      list.sort((a, b) => productPriceRange(a).min - productPriceRange(b).min);
-      break;
-    case 'precio-desc':
-      list.sort((a, b) => productPriceRange(b).min - productPriceRange(a).min);
-      break;
-    case 'nuevos':
-      list.sort((a, b) => Number(b.tags.includes('nuevo')) - Number(a.tags.includes('nuevo')));
-      break;
-    default:
-      break;
-  }
-  return list;
-}
-
-export function CatalogFilters({ products, total }: Props) {
+export function CatalogFilters({ products, total }: { products: Product[]; total: number }) {
   const router = useRouter();
   const params = useSearchParams();
-
+  const query = params.toString();
+  const selection = useMemo(() => readFilters(new URLSearchParams(query)), [query]);
+  const [draft, setDraft] = useState(selection);
   const [open, setOpen] = useState(false);
   const panel = useRef<HTMLDivElement>(null);
-  const closeFilters = useCallback(() => setOpen(false), []);
-  useModal(open, closeFilters, panel);
-  const [flowers, setFlowers] = useState<FlowerTag[]>([]);
-  const [occasions, setOccasions] = useState<OccasionSlug[]>([]);
-  const [sizes, setSizes] = useState<VariantSize[]>([]);
-  const [priceMin, setPriceMin] = useState<string>('');
-  const [priceMax, setPriceMax] = useState<string>('');
-  const [sort, setSort] = useState<SortKey>('relevancia');
-
-  // Hidratar desde query params
+  const close = useCallback(() => setOpen(false), []);
+  useModal(open, close, panel);
+  useEffect(() => setDraft(selection), [selection]);
   useEffect(() => {
-    const o = params.get('occasion');
-    setOccasions(o && o in occasionLabels ? [o as OccasionSlug] : []);
-    const f = params.get('flower');
-    setFlowers(f && f in flowerLabels ? [f as FlowerTag] : []);
-    const pmax = params.get('priceMax');
-    setPriceMax(pmax && Number.isFinite(Number(pmax)) ? pmax : '');
-    const pmin = params.get('priceMin');
-    setPriceMin(pmin && Number.isFinite(Number(pmin)) ? pmin : '');
-    const s = params.get('sort') as typeof sort | null;
-    setSort(sortOptions.some(o => o.value === s) ? s! : 'relevancia');
-  }, [params]);
-
-  const filtered = useMemo(
-    () =>
-      applyFilters(products, {
-        flowers,
-        occasions,
-        sizes,
-        priceMin: priceMin ? Number(priceMin) : undefined,
-        priceMax: priceMax ? Number(priceMax) : undefined,
-        sort
-      }),
-    [products, flowers, occasions, sizes, priceMin, priceMax, sort]
-  );
-
-  const toggle = <T,>(arr: T[], v: T, setter: (a: T[]) => void) => {
-    setter(arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v]);
+    const desktop = window.matchMedia('(min-width: 1024px)');
+    const sync = () => { if (desktop.matches) setOpen(false); };
+    desktop.addEventListener('change', sync);
+    return () => desktop.removeEventListener('change', sync);
+  }, []);
+  const filtered = useMemo(() => filterProducts(products, selection), [products, selection]);
+  const draftCount = useMemo(() => filterProducts(products, draft).length, [products, draft]);
+  const invalidRange = draft.priceMin !== '' && draft.priceMax !== '' && Number(draft.priceMin) > Number(draft.priceMax);
+  const navigate = (next: FilterSelection) => {
+    const search = filterQuery(next);
+    router.push(`/coleccion${search ? `?${search}` : ''}`, { scroll: false });
+    setDraft(next);
+    close();
   };
-
-  const reset = () => {
-    setFlowers([]);
-    setOccasions([]);
-    setSizes([]);
-    setPriceMin('');
-    setPriceMax('');
-    setSort('relevancia');
-    router.replace('/coleccion');
+  const toggle = (key: 'categories' | 'flowers' | 'occasions' | 'sizes', value: string) => {
+    setDraft(current => ({ ...current, [key]: (current[key] as string[]).includes(value) ? current[key].filter(item => item !== value) : [...current[key], value] }));
   };
-
-  const FilterPanel = (
-    <div className="space-y-8">
-      <div>
-        <p className="eyebrow mb-3">Tipo de flor</p>
-        <div className="flex flex-wrap gap-2">
-          {Object.entries(flowerLabels).map(([k, label]) => {
-            const active = flowers.includes(k as FlowerTag);
-            return (
-              <button
-                key={k}
-                type="button"
-                onClick={() => toggle(flowers, k as FlowerTag, setFlowers)}
-                className={cn(
-                  'px-3 py-1.5 text-xs rounded-sm border transition-colors',
-                  active
-                    ? 'bg-forest text-cream border-forest'
-                    : 'bg-cream text-forest border-line hover:border-forest'
-                )}
-              >
-                {label}
-              </button>
-            );
-          })}
-        </div>
+  const groups = [
+    { key: 'categories' as const, title: 'Tipo de regalo', entries: categories.map(category => [category.slug, category.name]) },
+    { key: 'occasions' as const, title: 'Ocasión', entries: Object.entries(occasionLabels) },
+    { key: 'sizes' as const, title: 'Tamaño', entries: ['S', 'M', 'L', 'XL'].map(size => [size, size]) },
+    { key: 'flowers' as const, title: 'Tipo de flor', entries: Object.entries(flowerLabels) }
+  ];
+  const chipStyle = 'min-h-11 inline-flex items-center justify-center rounded-sm border px-3 py-2 text-sm text-left';
+  const filterPanel = (prefix: string) => <form className="space-y-6" onSubmit={event => { event.preventDefault(); if (!invalidRange) navigate(draft); }}>
+    {groups.map(group => <fieldset key={group.key}>
+      <legend className="text-sm font-medium mb-3">{group.title}</legend>
+      <div className="flex flex-wrap gap-2">{group.entries.map(([value, label]) => {
+        const active = (draft[group.key] as string[]).includes(value);
+        return <button key={value} type="button" aria-pressed={active} onClick={() => toggle(group.key, value)} className={`${chipStyle} ${active ? 'bg-forest text-cream border-forest' : 'border-line hover:border-forest'}`}>{label}</button>;
+      })}</div>
+    </fieldset>)}
+    <fieldset><legend className="text-sm font-medium mb-3">Presupuesto en Bs</legend>
+      <div className="grid grid-cols-2 gap-3">
+        <Input id={`${prefix}-min`} label="Desde" type="number" inputMode="numeric" min={0} step="any" placeholder="Sin mínimo" value={draft.priceMin} onChange={event => setDraft(current => ({ ...current, priceMin: event.target.value }))} />
+        <Input id={`${prefix}-max`} label="Hasta" type="number" inputMode="numeric" min={0} step="any" placeholder="Sin máximo" value={draft.priceMax} onChange={event => setDraft(current => ({ ...current, priceMax: event.target.value }))} error={invalidRange ? 'Debe ser igual o mayor al mínimo.' : undefined} />
       </div>
-
-      <div>
-        <p className="eyebrow mb-3">Ocasión</p>
-        <div className="flex flex-wrap gap-2">
-          {Object.entries(occasionLabels).map(([k, label]) => {
-            const active = occasions.includes(k as OccasionSlug);
-            return (
-              <button
-                key={k}
-                type="button"
-                onClick={() => toggle(occasions, k as OccasionSlug, setOccasions)}
-                className={cn(
-                  'px-3 py-1.5 text-xs rounded-sm border transition-colors',
-                  active
-                    ? 'bg-forest text-cream border-forest'
-                    : 'bg-cream text-forest border-line hover:border-forest'
-                )}
-              >
-                {label}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      <div>
-        <p className="eyebrow mb-3">Tamaño</p>
-        <div className="flex gap-2">
-          {(['S', 'M', 'L', 'XL'] as VariantSize[]).map((s) => {
-            const active = sizes.includes(s);
-            return (
-              <button
-                key={s}
-                type="button"
-                onClick={() => toggle(sizes, s, setSizes)}
-                className={cn(
-                  'w-10 h-10 text-xs rounded-sm border transition-colors',
-                  active
-                    ? 'bg-forest text-cream border-forest'
-                    : 'bg-cream text-forest border-line hover:border-forest'
-                )}
-              >
-                {s}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      <div>
-        <p className="eyebrow mb-3">Precio (BOB)</p>
-        <div className="flex items-center gap-3">
-          <Input
-            type="number"
-            aria-label="Precio mínimo"
-            inputMode="numeric"
-            placeholder="Mín."
-            value={priceMin}
-            onChange={(e) => setPriceMin(e.target.value)}
-            className="w-24"
-            min={0}
-          />
-          <span className="text-muted">—</span>
-          <Input
-            type="number"
-            aria-label="Precio máximo"
-            inputMode="numeric"
-            placeholder="Máx."
-            value={priceMax}
-            onChange={(e) => setPriceMax(e.target.value)}
-            className="w-24"
-            min={0}
-          />
-        </div>
-      </div>
-
-      <button
-        type="button"
-        onClick={reset}
-        className="text-xs uppercase tracking-wider text-muted hover:text-clay"
-      >
-        Limpiar filtros
-      </button>
+    </fieldset>
+    <div className="sticky bottom-0 bg-cream pt-3 pb-[max(1rem,env(safe-area-inset-bottom))] space-y-2">
+      <Button fullWidth type="submit" disabled={invalidRange}>Ver {draftCount} resultados</Button>
+      <Button fullWidth variant="ghost" onClick={() => navigate(emptyFilters)}>Limpiar filtros</Button>
     </div>
-  );
-
-  return (
-    <div className="grid lg:grid-cols-[260px_1fr] gap-10 lg:gap-14">
-      <aside className="hidden lg:block sticky top-28 self-start">
-        <div className="flex items-center gap-2 mb-6">
-          <SlidersHorizontal size={16} strokeWidth={1.5} />
-          <p className="font-serif text-lg">Filtros</p>
+  </form>;
+  return <div className="grid lg:grid-cols-[260px_minmax(0,1fr)] gap-8 lg:gap-12">
+    <aside className="hidden lg:block self-start" aria-label="Filtros del catálogo"><h2 className="font-serif text-xl mb-5">Encuentra tu regalo</h2>{filterPanel('desktop')}</aside>
+    <div className="min-w-0">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
+        <p className="text-sm text-muted" role="status" aria-live="polite"><span className="font-medium text-forest">{filtered.length}</span> de {total} productos de muestra</p>
+        <div className="flex items-center gap-2 min-w-0">
+          <label htmlFor="catalog-sort" className="sr-only">Ordenar productos</label>
+          <select id="catalog-sort" value={selection.sort} onChange={event => navigate({ ...selection, sort: event.target.value as FilterSelection['sort'] })} className="min-h-11 flex-1 min-w-0 rounded-sm bg-cream border border-line px-3 text-sm">
+            {sortOptions.map(option => <option key={option.value} value={option.value}>{option.label}</option>)}
+          </select>
+          <button type="button" onClick={() => { setDraft(selection); setOpen(true); }} aria-haspopup="dialog" aria-expanded={open} className={`${chipStyle} lg:hidden gap-2 border-forest shrink-0`}><Filter size={16} />Filtros</button>
         </div>
-        {FilterPanel}
-      </aside>
-
-      <div>
-        <div className="flex items-center justify-between mb-6 gap-3">
-          <p className="text-sm text-muted">
-            <span className="text-forest font-medium">{filtered.length}</span> de {total} arreglos
-          </p>
-          <div className="flex items-center gap-2">
-            <label htmlFor="sort" className="text-xs uppercase tracking-wider text-muted hidden sm:inline">
-              Ordenar
-            </label>
-            <select
-              id="sort"
-              value={sort}
-              onChange={(e) => setSort(e.target.value as typeof sort)}
-              className="bg-cream border border-line rounded-sm px-3 py-2 text-xs uppercase tracking-wider"
-            >
-              {sortOptions.map((o) => (
-                <option key={o.value} value={o.value}>
-                  {o.label}
-                </option>
-              ))}
-            </select>
-            <button
-              type="button"
-              className="lg:hidden inline-flex items-center gap-2 text-xs uppercase tracking-wider text-forest border border-line px-3 py-2 rounded-sm"
-              onClick={() => setOpen(true)}
-            >
-              <Filter size={14} strokeWidth={1.5} /> Filtros
-            </button>
-          </div>
-        </div>
-
-        {filtered.length === 0 ? (
-          <div className="py-20 text-center">
-            <p className="font-serif text-2xl mb-2">No encontramos arreglos con esos filtros.</p>
-            <p className="text-muted text-sm">Probá quitar alguno o ampliar el rango de precio.</p>
-            <Button variant="secondary" className="mt-6" onClick={reset}>
-              Limpiar filtros
-            </Button>
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-10">
-            {filtered.map((p) => (
-              <ProductCardFiltered key={p._id} product={p} />
-            ))}
-          </div>
-        )}
       </div>
-
-      {/* Mobile drawer */}
-      {open && (
-        <div className="fixed inset-0 z-50 lg:hidden">
-          <div className="absolute inset-0 bg-forest/30 backdrop-blur-sm" onClick={() => setOpen(false)} />
-          <div ref={panel} role="dialog" aria-modal="true" aria-label="Filtros del catálogo" tabIndex={-1} className="absolute inset-y-0 right-0 w-full sm:w-[420px] bg-cream shadow-2xl flex flex-col">
-            <div className="flex items-center justify-between px-5 h-16 border-b border-line">
-              <p className="font-serif text-xl">Filtros</p>
-              <button onClick={() => setOpen(false)} aria-label="Cerrar filtros" className="p-2">
-                <X size={18} strokeWidth={1.5} />
-              </button>
-            </div>
-            <div className="flex-1 overflow-y-auto px-5 py-6">{FilterPanel}</div>
-            <div className="px-5 py-4 border-t border-line">
-              <Button fullWidth onClick={() => setOpen(false)}>
-                Ver {filtered.length} resultados
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+      <nav aria-label="Categorías del catálogo" className="flex flex-wrap gap-2 mb-4">
+        {categories.map(category => <button key={category.slug} type="button" aria-pressed={selection.categories.includes(category.slug)} className={`${chipStyle} ${selection.categories.includes(category.slug) ? 'bg-forest text-cream border-forest' : 'border-line'}`} onClick={() => navigate({ ...selection, categories: selection.categories.length === 1 && selection.categories[0] === category.slug ? [] : [category.slug] })}>{category.name}</button>)}
+      </nav>
+      <div className="flex flex-wrap gap-2 mb-5" aria-label="Presupuestos rápidos">
+        {[{ label: 'Hasta Bs 200', min: '', max: '200' }, { label: 'Bs 200–350', min: '200', max: '350' }, { label: 'Desde Bs 350', min: '350', max: '' }].map(budget => <button type="button" key={budget.label} aria-pressed={selection.priceMin === budget.min && selection.priceMax === budget.max} onClick={() => navigate({ ...selection, priceMin: budget.min, priceMax: budget.max })} className={`${chipStyle} border-line bg-ivory/50`}>{budget.label}</button>)}
+      </div>
+      <div className="flex flex-wrap gap-2 mb-6" aria-label="Filtros aplicados">
+        {groups.flatMap(group => selection[group.key].map(value => <button key={`${group.key}-${value}`} type="button" className="pill min-h-11" aria-label={`Quitar filtro ${group.entries.find(entry => entry[0] === value)?.[1] || value}`} onClick={() => navigate({ ...selection, [group.key]: selection[group.key].filter(item => item !== value) })}>{group.entries.find(entry => entry[0] === value)?.[1] || value}<X size={14} /></button>))}
+        {(selection.priceMin !== '' || selection.priceMax !== '') && <button type="button" className="pill min-h-11" aria-label="Quitar filtro de presupuesto" onClick={() => navigate({ ...selection, priceMin: '', priceMax: '' })}>Bs {selection.priceMin || '0'}–{selection.priceMax || 'sin límite'}<X size={14} /></button>}
+      </div>
+      {!filtered.length ? <div className="rounded-lg border border-line p-6 md:p-10 text-center">
+        <h2 className="font-serif text-2xl mb-3">No hay muestras para esta selección.</h2>
+        <p className="text-sm text-muted mb-6">Puedes ampliar el presupuesto o quitar filtros. Para eternas, globos, peluches y combos, consulta las opciones por WhatsApp.</p>
+        <Button variant="secondary" onClick={() => navigate(emptyFilters)}>Ver todo el catálogo</Button>
+        <a href={whatsappLink(`Hola, quiero consultar opciones de ${selection.categories.map(slug => categories.find(category => category.slug === slug)?.name).join(', ') || 'regalos'} en Norah’s Garden.`)} target="_blank" rel="noreferrer" className="flex min-h-11 justify-center items-center underline text-sm mt-4">Consultar por WhatsApp</a>
+      </div> : <div className="grid grid-cols-2 md:grid-cols-3 gap-x-3 sm:gap-x-5 gap-y-8">{filtered.map(product => <ProductCard key={product._id} product={product} />)}</div>}
+      <Link href="/contacto#entregas" className="inline-flex min-h-11 items-center underline text-sm mt-8">Consulta cobertura y condiciones de entrega</Link>
     </div>
-  );
-}
-
-// re-export a la grilla
-import { ProductCard } from '@/components/product/ProductCard';
-function ProductCardFiltered({ product }: { product: Product }) {
-  return <ProductCard product={product} />;
+    {open && <div className="fixed inset-0 z-50 lg:hidden">
+      <div className="absolute inset-0 bg-forest/30 backdrop-blur-sm" onClick={close} aria-hidden="true" />
+      <div ref={panel} role="dialog" aria-modal="true" aria-label="Filtros del catálogo" tabIndex={-1} className="absolute inset-y-0 right-0 w-full sm:max-w-md bg-cream flex flex-col shadow-2xl">
+        <div className="flex items-center justify-between px-5 min-h-16 border-b border-line shrink-0"><h2 className="font-serif text-xl">Encuentra tu regalo</h2><button type="button" onClick={close} aria-label="Cerrar filtros" className="w-11 h-11 inline-flex items-center justify-center"><X size={20} /></button></div>
+        <div className="flex-1 overflow-y-auto px-5 pt-6">{filterPanel('mobile')}</div>
+      </div>
+    </div>}
+  </div>;
 }

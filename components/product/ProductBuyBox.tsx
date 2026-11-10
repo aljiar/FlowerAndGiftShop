@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Check, ShoppingBag, Truck, Calendar, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { DeliveryEstimate } from '@/components/checkout/DeliveryEstimate';
 import { Badge } from '@/components/ui/Badge';
 import { Textarea } from '@/components/ui/Field';
 import { useCartStore } from '@/lib/store/useCartStore';
-import { site } from '@/lib/constants';
+import { site, commerceReady } from '@/lib/constants';
 import { formatPrice } from '@/lib/format';
 import type { Product } from '@/types';
 
@@ -18,13 +19,23 @@ export function ProductBuyBox({ product }: Props) {
   const [variantId, setVariantId] = useState(product.variants[0].id);
   const [message, setMessage] = useState('');
   const [added, setAdded] = useState(false);
+  const hydrated = useCartStore(state => state.hydrated);
+  const cta = useRef<HTMLDivElement>(null);
+  const timer = useRef<ReturnType<typeof setTimeout>>();
+  const [showBar, setShowBar] = useState(true);
+  useEffect(() => {
+    document.body.classList.add('has-mobile-buy-bar');
+    const observer = typeof IntersectionObserver === 'undefined' ? null : new IntersectionObserver(entries => setShowBar(!entries[0].isIntersecting));
+    if (cta.current) observer?.observe(cta.current);
+    return () => { observer?.disconnect(); document.body.classList.remove('has-mobile-buy-bar'); if (timer.current) clearTimeout(timer.current); };
+  }, []);
   const addToCart = useCartStore((s) => s.add);
 
   const variant = product.variants.find((v) => v.id === variantId)!;
   const unitPrice = product.basePrice + variant.priceDelta;
 
   const handleAdd = () => {
-    if (!product.inStock) return;
+    if (!product.inStock || !hydrated) return;
     addToCart({
       productId: product._id,
       variantId,
@@ -33,11 +44,12 @@ export function ProductBuyBox({ product }: Props) {
 
     });
     setAdded(true);
-    setTimeout(() => setAdded(false), 2200);
+    if (timer.current) clearTimeout(timer.current);
+    timer.current = setTimeout(() => setAdded(false), 2200);
   };
 
   return (
-    <div className="lg:sticky lg:top-28 self-start space-y-6">
+    <div id="opciones-producto" className="lg:sticky lg:top-28 self-start space-y-6 scroll-mt-28 min-w-0">
       <header className="space-y-3">
         <div className="flex flex-wrap gap-1.5">
           {product.tags.includes('nuevo') && <Badge variant="accent">Nuevo</Badge>}
@@ -47,7 +59,7 @@ export function ProductBuyBox({ product }: Props) {
             <Badge variant="sale">Oferta</Badge>
           )}
         </div>
-        <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl leading-[1.05] tracking-editorial">
+        <h1 className="hidden lg:block font-serif text-3xl md:text-4xl lg:text-5xl leading-[1.05] tracking-editorial">
           {product.name}
         </h1>
         <p className="text-base text-muted leading-relaxed">{product.shortDescription}</p>
@@ -64,7 +76,7 @@ export function ProductBuyBox({ product }: Props) {
       {/* Variantes */}
       <div className="space-y-2">
         <p className="text-xs uppercase tracking-wider text-muted">Tamaño</p>
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
           {product.variants.map((v) => {
             const active = v.id === variantId;
             return (
@@ -73,7 +85,7 @@ export function ProductBuyBox({ product }: Props) {
                 type="button"
                 onClick={() => setVariantId(v.id)}
                 aria-pressed={active}
-                className={`text-left p-3 rounded-sm border transition-colors ${
+                className={`text-left min-h-16 p-3 rounded-sm min-w-0 break-words border transition-colors ${
                   active
                     ? 'border-forest bg-ivory/60'
                     : 'border-line hover:border-forest'
@@ -89,6 +101,7 @@ export function ProductBuyBox({ product }: Props) {
         </div>
       </div>
 
+      <p className="text-sm bg-ivory/60 p-3 rounded-sm" aria-live="polite"><strong>{variant.label}:</strong> {variant.details || (variant.label.includes('·') ? 'Incluye ' + variant.label.split('·').slice(1).join('·').trim() + ', con composición de referencia.' : 'Consulta composición y medidas; la fotografía es de referencia.')}</p>
       {/* Mensaje tarjeta */}
       <Textarea
         label="Mensaje para la tarjeta (opcional)"
@@ -104,13 +117,13 @@ export function ProductBuyBox({ product }: Props) {
       <p className="text-sm text-muted">Catálogo de ejemplo. Consulta disponibilidad, dirección y fecha por WhatsApp antes de pagar; agregar al carrito no reserva el producto.</p>
 
       {/* CTA */}
-      <div className="flex flex-col sm:flex-row gap-2 pt-2">
+      <div ref={cta} className="flex flex-col sm:flex-row gap-2 pt-2">
         <Button
           size="lg"
           fullWidth
           onClick={handleAdd}
           aria-label="Añadir al carrito"
-          disabled={!product.inStock}
+          disabled={!product.inStock || !hydrated}
         >
           {added ? (
             <>
@@ -125,6 +138,7 @@ export function ProductBuyBox({ product }: Props) {
 
       </div>
 
+      <DeliveryEstimate subtotal={unitPrice} />
       {/* Avisos */}
       <ul className="space-y-3 pt-2 text-xs text-muted border-t border-line">
         <li className="flex items-start gap-3">
@@ -146,6 +160,15 @@ export function ProductBuyBox({ product }: Props) {
           </span>
         </li>
       </ul>
+      {showBar && <div data-mobile-buy-bar className="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-cream border-t border-line shadow-soft px-5 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+        <div className="max-w-xl mx-auto">
+          <div className="flex items-center gap-3 justify-between">
+            <div className="min-w-0"><p className="font-serif text-xl">{formatPrice(unitPrice)}</p><p className="text-xs text-muted break-words">{variant.label}{!commerceReady ? ' · referencia' : ''}</p></div>
+            <Button className="shrink-0" onClick={handleAdd} disabled={!product.inStock || !hydrated} aria-label={`Añadir al carrito: ${product.name}, ${variant.label}`}>{product.inStock ? 'Añadir' : 'No disponible'}</Button>
+          </div>
+          <a href="#opciones-producto" className="min-h-11 inline-flex items-center text-sm underline">Elegir tamaño y dedicatoria</a>
+        </div>
+      </div>}
     </div>
   );
 }

@@ -9,6 +9,7 @@ export const products: Product[] = [
   {
     _id: 'p-001',
     slug: 'jardin-en-rosa',
+    category: 'flores-naturales',
     name: 'Jardín en rosa',
     shortDescription:
       'Rosas garden y peonías rosadas en composición suelta, acabadas con eucalyptus.',
@@ -37,6 +38,7 @@ export const products: Product[] = [
   {
     _id: 'p-002',
     slug: 'amanecer-silvestre',
+    category: 'flores-naturales',
     name: 'Amanecer silvestre',
     shortDescription:
       'Tulipanes, anémonas y ramas de manzano en bouquet de estilo europeo.',
@@ -60,6 +62,7 @@ export const products: Product[] = [
   {
     _id: 'p-003',
     slug: 'hortensia-de-luz',
+    category: 'flores-naturales',
     name: 'Hortensia de luz',
     shortDescription:
       'Una sola hortensia blanca en jarrón bajo de barro cocido, ideal para escritorios.',
@@ -80,6 +83,7 @@ export const products: Product[] = [
   {
     _id: 'p-004',
     slug: 'sol-de-enero',
+    category: 'flores-naturales',
     name: 'Sol de enero',
     shortDescription: 'Girasoles, solidago y hojas de palmera en canasta de mimbre.',
     longDescription:
@@ -101,6 +105,7 @@ export const products: Product[] = [
   {
     _id: 'p-005',
     slug: 'silencio-blanco',
+    category: 'flores-naturales',
     name: 'Silencio blanco',
     shortDescription:
       'Lilis blancos, astilbe y olivo para acompañar condolencias con respeto.',
@@ -122,6 +127,7 @@ export const products: Product[] = [
   {
     _id: 'p-006',
     slug: 'capullo',
+    category: 'plantas',
     name: 'Capullo',
     shortDescription:
       'Suculentas y tillandsias en caja de madera reciclada. Un regalo que dura.',
@@ -143,6 +149,7 @@ export const products: Product[] = [
   {
     _id: 'p-007',
     slug: 'sereno',
+    category: 'flores-naturales',
     name: 'Sereno',
     shortDescription:
       'Lavanda, romero y statice en bouquet aromático para acompañar una cena.',
@@ -165,6 +172,7 @@ export const products: Product[] = [
   {
     _id: 'p-008',
     slug: 'poema',
+    category: 'flores-naturales',
     name: 'Poema',
     shortDescription:
       'Bouquet editorial de rosas rojas, ramificada y envuelta en papel washi.',
@@ -188,6 +196,7 @@ export const products: Product[] = [
   {
     _id: 'p-009',
     slug: 'luna-de-agosto',
+    category: 'flores-naturales',
     name: 'Luna de agosto',
     shortDescription:
       'Proteas, banksias y eucalyptus en arreglo de estilo sudafricano.',
@@ -210,6 +219,7 @@ export const products: Product[] = [
   {
     _id: 'p-010',
     slug: 'alba',
+    category: 'flores-naturales',
     name: 'Alba',
     shortDescription:
       'Peonías blancas, rosa blanca y jazmín en composición de novia.',
@@ -231,6 +241,7 @@ export const products: Product[] = [
   {
     _id: 'p-011',
     slug: 'mesa-larga',
+    category: 'flores-naturales',
     name: 'Mesa larga',
     shortDescription:
       'Centro de mesa bajo con hortensias, velas y romero para eventos.',
@@ -253,6 +264,7 @@ export const products: Product[] = [
   {
     _id: 'p-012',
     slug: 'detalle-suave',
+    category: 'flores-naturales',
     name: 'Detalle suave',
     shortDescription:
       'Rosas en miniatura y paniculata en cajita de regalo. Para detalles corporativos.',

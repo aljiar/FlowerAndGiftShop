@@ -16,6 +16,13 @@ export function Header() {
   const openCart = useCartStore((s) => s.open);
 
   useEffect(() => {
+    const desktop = window.matchMedia('(min-width: 1024px)');
+    const closeOnDesktop = () => { if (desktop.matches) setMobileOpen(false); };
+    desktop.addEventListener('change', closeOnDesktop);
+    return () => desktop.removeEventListener('change', closeOnDesktop);
+  }, []);
+
+  useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -32,10 +39,10 @@ export function Header() {
             : 'bg-cream border-transparent'
         )}
       >
-        <div className="container flex items-center justify-between h-16 md:h-20 gap-4">
+        <div className="container flex items-center justify-between h-16 md:h-20 gap-2">
           <button
             type="button"
-            className="md:hidden -ml-1 p-2 text-forest"
+            className="lg:hidden -ml-1 w-11 h-11 inline-flex items-center justify-center text-forest"
             aria-label="Abrir menú"
             onClick={() => setMobileOpen(true)}
           >
@@ -44,14 +51,14 @@ export function Header() {
 
           <Link
             href="/"
-            className="font-serif text-2xl md:text-3xl tracking-editorial text-forest leading-none"
+            className="font-serif text-2xl md:text-3xl tracking-editorial text-forest leading-none whitespace-nowrap"
             aria-label={`${site.name} · inicio`}
           >
             {site.name}
             <span className="text-clay">·</span>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-7" aria-label="Principal">
+          <nav className="hidden lg:flex items-center gap-5" aria-label="Principal">
             {navLinks.map((l) => (
               <Link
                 key={l.href + l.label}
@@ -67,12 +74,12 @@ export function Header() {
             <button
               type="button"
               onClick={openCart}
-              className="relative p-2 text-forest/80 hover:text-forest transition-colors"
+              className="relative w-11 h-11 inline-flex items-center justify-center text-forest/80 hover:text-forest transition-colors"
               aria-label={`Carrito (${hydrated ? count : 0} productos)`}
             >
               <ShoppingBag size={20} strokeWidth={1.5} />
               {hydrated && count > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 bg-clay text-cream text-[10px] leading-none w-4 h-4 flex items-center justify-center rounded-full font-medium">
+                <span className="absolute -top-0.5 -right-0.5 bg-forest text-cream text-[10px] leading-none w-4 h-4 flex items-center justify-center rounded-full font-medium">
                   {count}
                 </span>
               )}

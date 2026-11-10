@@ -22,12 +22,14 @@ export type OccasionSlug =
 export type ProductTag = 'nuevo' | 'best' | 'edicion-limitada' | 'sale';
 
 export type VariantSize = 'S' | 'M' | 'L' | 'XL';
+export type ProductCategory = 'flores-naturales' | 'flores-eternas' | 'globos' | 'peluches' | 'combos' | 'plantas';
 
 export interface ProductVariant {
   id: string;
   size: VariantSize;
   label: string;
   priceDelta: number;
+  details?: string;
 }
 
 export interface ProductImage {
@@ -40,6 +42,7 @@ export interface ProductImage {
 export interface Product {
   _id: string;
   slug: string;
+  category: ProductCategory;
   name: string;
   shortDescription: string;
   longDescription: string;

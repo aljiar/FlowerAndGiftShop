@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { QuickAdd } from './QuickAdd';
 import { Badge } from '@/components/ui/Badge';
+import { categoryName } from '@/lib/categories';
 import { productPriceRange } from '@/lib/catalog';
 import { formatPrice } from '@/lib/format';
 import type { Product } from '@/types';
@@ -42,19 +43,19 @@ export function ProductCard({ product, priority, className }: ProductCardProps) 
         {!product.inStock && <span className="absolute bottom-3 left-3 bg-cream px-3 py-1 text-xs">No disponible</span>}
       </Link>
 
-      <div className="pt-4 px-1">
+      <div className="pt-4 px-1 min-w-0"><p className="text-xs text-muted mb-2">{categoryName(product.category)}</p>
         <Link href={`/producto/${product.slug}`} className="block group/title">
-          <h3 className="font-serif text-lg text-forest group-hover/title:text-clay transition-colors line-clamp-1">
+          <h3 className="font-serif text-base sm:text-lg text-forest group-hover/title:text-clay transition-colors break-words">
             {product.name}
           </h3>
         </Link>
         <p className="text-xs text-muted mt-1 line-clamp-2 min-h-[2rem]">
           {product.shortDescription}
         </p>
-        <div className="flex items-baseline gap-2 mt-2">
-          <p className="font-serif text-base text-forest">{formatPrice(range.min)}</p>
+        <div className="flex flex-wrap items-baseline gap-1 mt-2">
+          <p className="font-serif text-base text-forest">{range.min !== range.max ? 'Desde ' : ''}{formatPrice(range.min)}</p>
           {range.min !== range.max && (
-            <span className="text-xs text-muted">– {formatPrice(range.max)}</span>
+            <span className="text-xs text-muted w-full">Hasta {formatPrice(range.max)}</span>
           )}
           {hasDiscount && (
             <span className="text-xs text-muted line-through ml-1">

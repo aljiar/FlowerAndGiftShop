@@ -1,6 +1,7 @@
+import { getProductsByOccasion, productPriceRange } from './catalog';
 import type { Occasion } from '@/types';
 
-export const occasions: Occasion[] = [
+const occasionData: Occasion[] = [
   {
     _id: 'o-1',
     slug: 'cumpleanos',
@@ -68,6 +69,11 @@ export const occasions: Occasion[] = [
     startingPrice: 140
   }
 ];
+
+export const occasions: Occasion[] = occasionData.map(occasion => {
+  const samples = getProductsByOccasion(occasion.slug);
+  return { ...occasion, startingPrice: samples.length ? Math.min(...samples.map(product => productPriceRange(product).min)) : occasion.startingPrice };
+});
 
 export const occasionBySlug = (slug: string) =>
   occasions.find((o) => o.slug === slug);

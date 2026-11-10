@@ -49,7 +49,7 @@ const config: Config = {
           hover: '#B66B4B',
           soft: '#E8B49E'
         },
-        muted: '#8A847A',
+        muted: '#6E695F',
         line: '#E5DED2',
         ink: '#1B241F'
       },

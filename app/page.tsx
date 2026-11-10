@@ -1,3 +1,4 @@
+import { CategoryGrid } from '@/components/home/CategoryGrid';
 import { Hero } from '@/components/home/Hero';
 import { IntentGrid } from '@/components/home/IntentGrid';
 import { FeaturedGrid } from '@/components/home/FeaturedGrid';
@@ -11,6 +12,7 @@ export default function HomePage() {
   return (
     <>
       <Hero />
+      <CategoryGrid />
       <IntentGrid />
       <FeaturedGrid />
       <TrustBar />

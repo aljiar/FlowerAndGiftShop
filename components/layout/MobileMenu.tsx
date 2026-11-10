@@ -5,6 +5,7 @@ import { useRef } from 'react';
 import { useModal } from '@/lib/useModal';
 import { X, ArrowRight } from 'lucide-react';
 import { navLinks, site } from '@/lib/constants';
+import { categories } from '@/lib/categories';
 import { occasions } from '@/lib/occasions';
 
 interface Props {
@@ -20,7 +21,7 @@ export function MobileMenu({ open, onClose }: Props) {
   return (
     <div
       aria-hidden={!open}
-      className={`fixed inset-0 z-50 md:hidden transition-opacity duration-300 ${
+      className={`fixed inset-0 z-50 lg:hidden transition-opacity duration-300 ${
         open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
       }`}
     >
@@ -46,7 +47,7 @@ export function MobileMenu({ open, onClose }: Props) {
           <button
             type="button"
             onClick={onClose}
-            className="p-2 text-forest"
+            className="w-11 h-11 inline-flex items-center justify-center text-forest"
             aria-label="Cerrar menú"
           >
             <X size={20} strokeWidth={1.5} />
@@ -68,6 +69,7 @@ export function MobileMenu({ open, onClose }: Props) {
             ))}
           </ul>
 
+          <div><p className="eyebrow mb-3">Por tipo de regalo</p><ul className="grid grid-cols-2 gap-2">{categories.map(category => <li key={category.slug}><Link href={`/coleccion?category=${category.slug}`} onClick={onClose} className="flex items-center min-h-11 text-sm">{category.name}</Link></li>)}</ul></div>
           <div>
             <p className="eyebrow mb-3">Por ocasión</p>
             <ul className="grid grid-cols-2 gap-2">
@@ -76,7 +78,7 @@ export function MobileMenu({ open, onClose }: Props) {
                   <Link
                     href={`/ocasion/${o.slug}`}
                     onClick={onClose}
-                    className="block text-sm py-1.5 text-forest/80 hover:text-clay"
+                    className="flex items-center min-h-11 text-sm py-1.5 text-forest/80 hover:text-clay"
                   >
                     {o.name}
                   </Link>

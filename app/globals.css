@@ -7,7 +7,7 @@
     --bg: 251 247 242;
     --fg: 46 61 52;
     --accent: 201 123 90;
-    --muted: 138 132 122;
+    --muted: 110 105 95;
     --line: 229 222 210;
   }
 
@@ -82,4 +82,13 @@
     mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
     -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+}
+
+@media (max-width: 1023px) {
+  body.has-mobile-buy-bar { padding-bottom: calc(8rem + env(safe-area-inset-bottom)); }
 }
