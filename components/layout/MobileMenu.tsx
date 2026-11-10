@@ -41,7 +41,7 @@ export function MobileMenu({ open, onClose }: Props) {
       >
         <div className="flex items-center justify-between px-5 h-16 border-b border-line">
           <span className="font-serif text-2xl text-forest">
-            Pétalo<span className="text-clay">·</span>
+            {site.name}<span className="text-clay">·</span>
           </span>
           <button
             type="button"

@@ -8,7 +8,7 @@ import { site } from '@/lib/constants';
 
 export const metadata: Metadata = {
   title: 'Nosotros',
-  description: 'La historia de Pétalo, florería de autor en Cochabamba.'
+  description: `La historia de ${site.name}, florería de autor en ${site.city}.`
 };
 
 export default function NosotrosPage() {
@@ -18,7 +18,7 @@ export default function NosotrosPage() {
         <Container>
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-end">
             <div className="lg:col-span-7">
-              <span className="eyebrow mb-4">Sobre Pétalo</span>
+              <span className="eyebrow mb-4">Sobre {site.name}</span>
               <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-light leading-[1.04] tracking-editorial text-balance">
                 Una florería que<br />
                 <em className="italic text-clay">piensa antes de cortar</em>.
@@ -41,7 +41,7 @@ export default function NosotrosPage() {
             <div className="relative aspect-[4/5] rounded-sm overflow-hidden bg-ivory">
               <Image
                 src="https://images.unsplash.com/photo-1487070183336-b863922373d4?auto=format&fit=crop&w=1200&q=80"
-                alt="Taller de Pétalo"
+                alt={`Taller de ${site.name}`}
                 fill
                 className="object-cover"
               />

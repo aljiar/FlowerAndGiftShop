@@ -1,7 +1,8 @@
 import type { DeliveryZone, TimeSlot } from '@/types';
 
 export const site = {
-  name: 'Pétalo',
+  // Nombre público: se utiliza en navegación, páginas y metadatos.
+  name: "Norah's Garden",
   tagline: 'Florería de autor',
   city: 'Cochabamba',
   country: 'Bolivia',

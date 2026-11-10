@@ -1,4 +1,4 @@
-# Pétalo · Florería en Cochabamba
+# Norah's Garden · Florería en Cochabamba
 
 MVP de tienda floral con Next.js, TypeScript, Tailwind, carrito persistente y checkout con pedidos guardados en SQLite.
 
@@ -37,6 +37,8 @@ npm.cmd start
 El desarrollo usa `.next-dev` y producción usa `.next` para que no se sobrescriban sus archivos. Las tipografías se sirven localmente; las imágenes de muestra provienen de Unsplash.
 
 ## Configuración de contenido
+
+El nombre público de la tienda se cambia únicamente en `site.name` dentro de `lib/constants.ts`. La navegación, el pie de página, las páginas y los metadatos lo utilizan automáticamente. En el mismo objeto están los datos de contacto y las redes sociales.
 
 - `lib/catalog.ts`: productos, fotografías, variantes y disponibilidad.
 - `lib/constants.ts`: datos de negocio, WhatsApp, zonas, tarifas y horarios.

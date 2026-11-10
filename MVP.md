@@ -1,4 +1,4 @@
-# MVP Pétalo
+# MVP Norah's Garden
 
 ## Alcance implementado
 

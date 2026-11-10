@@ -5,11 +5,12 @@ import Image from 'next/image';
 import { useEffect, useRef } from 'react';
 import { useModal } from '@/lib/useModal';
 import { X, Plus, Minus, ArrowRight } from 'lucide-react';
-import { useCartStore } from '@/lib/store/useCartStore';
+import { hydrateCart, useCartStore } from '@/lib/store/useCartStore';
 import { products } from '@/lib/catalog';
 import { formatPrice } from '@/lib/format';
 
 export function CartDrawer() {
+  useEffect(() => { void hydrateCart(); }, []);
   const panel = useRef<HTMLElement>(null);
   const isOpen = useCartStore((s) => s.isOpen);
   const close = useCartStore((s) => s.close);

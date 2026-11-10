@@ -10,7 +10,7 @@ export function Footer() {
         <div className="grid gap-12 md:grid-cols-12">
           <div className="md:col-span-5">
             <Link href="/" className="font-serif text-3xl text-cream">
-              Pétalo<span className="text-clay">·</span>
+              {site.name}<span className="text-clay">·</span>
             </Link>
             <p className="mt-4 text-sm text-cream/70 leading-relaxed max-w-sm">
               Florería de autor en {site.city}. Flores de corte, diseño contemporáneo

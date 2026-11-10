@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "setup": "node scripts/setup-local.mjs",
-    "test": "node --test scripts/mvp.test.cjs",
+    "test": "node --test scripts/*.test.cjs",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",

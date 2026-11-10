@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { ShoppingBag, Menu } from 'lucide-react';
-import { navLinks } from '@/lib/constants';
+import { navLinks, site } from '@/lib/constants';
 import { useCartStore } from '@/lib/store/useCartStore';
 import { MobileMenu } from './MobileMenu';
 import { cn } from '@/lib/cva';
@@ -45,9 +45,9 @@ export function Header() {
           <Link
             href="/"
             className="font-serif text-2xl md:text-3xl tracking-editorial text-forest leading-none"
-            aria-label="Pétalo · inicio"
+            aria-label={`${site.name} · inicio`}
           >
-            Pétalo
+            {site.name}
             <span className="text-clay">·</span>
           </Link>
 

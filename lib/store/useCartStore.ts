@@ -1,6 +1,6 @@
 'use client';
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+import { persist, createJSONStorage, type StateStorage } from 'zustand/middleware';
 import type { CartItem } from '@/types';
 import { products } from '@/lib/catalog';
 
@@ -10,15 +10,29 @@ interface CartState {
   add: (item: Omit<CartItem, 'id'>) => void;
   remove: (id: string) => void;
   update: (id: string, partial: Partial<Pick<CartItem, 'qty' | 'message'>>) => void;
-  clear: () => void; count: () => number; finishHydration: () => void;
+  clear: () => void; count: () => number;
 }
+// Access storage lazily: SSR has no browser, and browsers can deny storage access.
+const browserStorage: StateStorage = {
+  getItem: name => {
+    try { return typeof window === 'undefined' ? null : window.localStorage.getItem(name); }
+    catch { return null; }
+  },
+  setItem: (name, value) => {
+    try { if (typeof window !== 'undefined') window.localStorage.setItem(name, value); }
+    catch { /* Keep the cart usable in memory when storage is blocked or full. */ }
+  },
+  removeItem: name => {
+    try { if (typeof window !== 'undefined') window.localStorage.removeItem(name); }
+    catch { /* Storage may be unavailable in private or restricted contexts. */ }
+  }
+};
 function validItem(item: CartItem): boolean {
   const product = products.find(p => p._id === item?.productId);
   return !!product?.inStock && !!product.variants.some(v => v.id === item.variantId) && Number.isInteger(item.qty) && item.qty > 0 && item.qty <= 99 && (item.message === undefined || (typeof item.message === 'string' && item.message.length <= 180));
 }
 export const useCartStore = create<CartState>()(persist((set, get) => ({
   items: [], isOpen: false, hydrated: false,
-  finishHydration: () => set({ hydrated: true }),
   open: () => set({ isOpen: true }), close: () => set({ isOpen: false }), toggle: () => set(s => ({ isOpen: !s.isOpen })),
   add: item => {
     if (!validItem(item as CartItem)) return;
@@ -30,12 +44,19 @@ export const useCartStore = create<CartState>()(persist((set, get) => ({
   update: (id, partial) => set({ items: get().items.map(i => i.id === id ? { ...i, ...(partial.qty !== undefined ? { qty: Math.min(99, Math.max(1, Math.floor(partial.qty))) } : {}), ...(partial.message !== undefined ? { message: partial.message.slice(0, 180) } : {}) } : i) }),
   clear: () => set({ items: [] }), count: () => get().items.reduce((sum, i) => sum + i.qty, 0)
 }), {
-  name: 'petalo-cart-v1', version: 2, storage: createJSONStorage(() => localStorage),
+  name: 'petalo-cart-v1', version: 2, storage: createJSONStorage(() => browserStorage),
+  skipHydration: true,
   partialize: state => ({ items: state.items }),
   migrate: persisted => ({ items: Array.isArray((persisted as { items?: CartItem[] })?.items) ? (persisted as { items: CartItem[] }).items.filter(validItem).map(i => ({ id: crypto.randomUUID(), productId: i.productId, variantId: i.variantId, qty: i.qty, message: i.message?.slice(0, 180) })) : [] }),
   merge: (persisted, current) => ({ ...current, items: Array.isArray((persisted as { items?: CartItem[] })?.items) ? (persisted as { items: CartItem[] }).items.filter(validItem).slice(0, 50).map(i => ({ ...i, id: typeof i.id === 'string' ? i.id : crypto.randomUUID() })) : [] }),
-  onRehydrateStorage: () => state => {
-    if (state) state.finishHydration();
-    else setTimeout(() => useCartStore.setState({ hydrated: true }), 0);
-  }
 }));
+
+export async function hydrateCart() {
+  if (typeof window === 'undefined' || useCartStore.getState().hydrated) return;
+  try {
+    await useCartStore.persist.rehydrate();
+  } finally {
+    // Also release the loading state when saved JSON is invalid.
+    useCartStore.setState({ hydrated: true });
+  }
+}

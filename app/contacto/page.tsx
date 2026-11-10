@@ -7,7 +7,7 @@ import { site, deliveryZones } from '@/lib/constants';
 
 export const metadata: Metadata = {
   title: 'Contacto',
-  description: 'Atención por WhatsApp, correo y formulario. Zonas de delivery y horarios de Pétalo.'
+  description: `Atención por WhatsApp, correo y formulario. Zonas de delivery y horarios de ${site.name}.`
 };
 
 export default function ContactoPage() {
