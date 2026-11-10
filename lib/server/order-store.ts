@@ -3,6 +3,7 @@ import { mkdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { createHash, randomBytes, randomUUID } from 'node:crypto';
 import type { CheckoutInput, Order, OrderStatus } from '../orders';
+import { recordOrderCreated } from './activity-store';
 import { priceOrder } from '../orders';
 
 interface Statement { run(...args: unknown[]): unknown; get(...args: unknown[]): Record<string, string> | undefined; all(...args: unknown[]): Record<string, string>[] }
@@ -32,6 +33,7 @@ export function saveOrder(input: CheckoutInput): Order {
     const order: Order = { ...priceOrder(input), id: `PET-${randomUUID().toUpperCase()}`, accessToken: randomBytes(32).toString('hex'), createdAt: new Date().toISOString(), status: 'pending' };
     database.prepare('INSERT INTO orders (id, request_id, fingerprint, created_at, payload) VALUES (?, ?, ?, ?, ?)').run(order.id, input.requestId, fingerprint, order.createdAt, JSON.stringify(order));
     database.exec('COMMIT');
+    recordOrderCreated();
     return order;
   } catch (error) { database.exec('ROLLBACK'); throw error; }
 }

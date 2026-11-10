@@ -12,6 +12,7 @@ import { checkoutSchema } from '@/lib/orders';
 import { checkoutErrors, checkoutPayload, readCheckoutDraft, saveCheckoutDraft, clearCheckoutDraft, initialCheckoutForm, type CheckoutFormData, type CheckoutErrors } from '@/lib/checkout-draft';
 import { Input, Select, Textarea } from '@/components/ui/Field';
 import { Button } from '@/components/ui/Button';
+import { trackActivity } from '@/lib/track-activity';
 import { formatPrice } from '@/lib/format';
 
 function session() {
@@ -37,6 +38,12 @@ export function CheckoutForm() {
   const attempt = useRef<{ body: string; requestId: string } | null>(null);
   const submitting = useRef(false);
   const completed = useRef(false);
+  const measuredStep = useRef(0);
+  useEffect(() => {
+    if (!commerceReady || !hydrated || !draftLoaded || !items.length || measuredStep.current === step) return;
+    measuredStep.current = step;
+    trackActivity({ event: step === 1 ? 'checkout_started' : step === 2 ? 'delivery_view' : 'review_view', source: 'checkout' });
+  }, [step, hydrated, draftLoaded, items.length]);
 
   useEffect(() => {
     if (!commerceReady) return;

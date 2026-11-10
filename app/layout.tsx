@@ -1,3 +1,4 @@
+import { ActivityTracker } from '@/components/analytics/ActivityTracker';
 import type { Metadata, Viewport } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
@@ -60,6 +61,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="es-BO" className={`${inter.variable} ${playfair.variable}`}>
       <body className="min-h-screen flex flex-col">
+        <ActivityTracker />
         <TopBar />
         {!commerceReady && <div className="bg-ivory border-b border-line px-5 py-3 text-center text-sm">Tienda en preparación · Catálogo y precios de ejemplo. Consulta opciones reales por WhatsApp antes de pagar.</div>}
         <Header />

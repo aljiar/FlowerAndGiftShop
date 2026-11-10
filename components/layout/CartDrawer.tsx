@@ -7,6 +7,7 @@ import { useModal } from '@/lib/useModal';
 import { X, ArrowRight } from 'lucide-react';
 import { hydrateCart, useCartStore } from '@/lib/store/useCartStore';
 import { QuantityControl } from '@/components/ui/QuantityControl';
+import { trackActivity } from '@/lib/track-activity';
 import { products } from '@/lib/catalog';
 import { formatPrice } from '@/lib/format';
 
@@ -14,6 +15,11 @@ export function CartDrawer() {
   useEffect(() => { void hydrateCart(); }, []);
   const panel = useRef<HTMLElement>(null);
   const isOpen = useCartStore((s) => s.isOpen);
+  const measuredOpen = useRef(false);
+  useEffect(() => {
+    if (isOpen && !measuredOpen.current) trackActivity({ event: 'cart_view', source: 'cart' });
+    measuredOpen.current = isOpen;
+  }, [isOpen]);
   const close = useCartStore((s) => s.close);
   const items = useCartStore((s) => s.items);
   const update = useCartStore((s) => s.update);

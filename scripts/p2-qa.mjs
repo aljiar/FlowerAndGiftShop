@@ -1,3 +1,4 @@
+import { DatabaseSync } from 'node:sqlite';
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { randomBytes, randomUUID } from 'node:crypto';
@@ -18,7 +19,8 @@ const password = randomBytes(32).toString('hex');
 const env = {
   ...process.env, NODE_ENV: 'production', NORAH_QA_BUILD: 'true',
   NEXT_PUBLIC_COMMERCE_READY: 'true', NEXT_PUBLIC_SITE_URL: 'https://example.com',
-  ORDERS_DB_PATH: database, ADMIN_PASSWORD: password
+  ORDERS_DB_PATH: database, ADMIN_PASSWORD: password,
+  NEXT_PUBLIC_METRICS_ENABLED: 'true', METRICS_DB_PATH: join(directory, 'activity.sqlite')
 };
 let server;
 const checks = [];
@@ -150,7 +152,32 @@ try {
   assert.ok((await (await fetch(base + receipt(second))).text()).includes('Pedido cancelado.'));
   assert.equal((await post('/api/checkout', data)).status, 200);
   passed('respaldo consistente y recuperación de pedidos, consultas, estados y reintentos');
+  for (const event of [
+    { event: 'product_view', source: 'product', productId: 'p-001' },
+    { event: 'product_view', source: 'product', productId: 'p-001' },
+    { event: 'cart_add', source: 'product', productId: 'p-001' },
+    { event: 'whatsapp_click', source: 'checkout' }
+  ]) assert.equal((await post('/api/activity', event)).status, 204);
+  assert.equal((await post('/api/activity', { event: 'product_view', source: 'product', productId: 'p-001', message: 'No guardar' })).status, 400);
+  assert.equal((await post('/api/activity', { event: 'order_created', source: 'order' })).status, 400);
+  assert.equal((await post('/api/activity', { event: 'cart_view', source: 'cart' }, { Origin: 'https://otro.example' })).status, 403);
+  assert.equal((await post('/api/activity', { event: 'cart_view', source: 'cart' }, { DNT: '1' })).status, 204);
+  const metrics = new DatabaseSync(join(directory, 'activity.sqlite'), { readOnly: true });
+  try {
+    const sum = event => metrics.prepare('SELECT SUM(count) AS n FROM activity_counts WHERE mode=? AND event=?').get('live', event).n || 0;
+    assert.equal(sum('order_created'), 2);
+    assert.equal(sum('product_view'), 2);
+    assert.equal(sum('cart_add'), 1);
+    assert.equal(sum('whatsapp_click'), 1);
+    assert.equal(sum('cart_view'), 0);
+  } finally { metrics.close(); }
+  const publicMetrics = await (await fetch(base + '/admin/metricas')).text();
+  assert.ok(publicMetrics.includes('Clave de administración') && !publicMetrics.includes('Productos más consultados'));
+  const privateMetrics = await (await fetch(base + '/admin/metricas', { headers: { Cookie: cookie } })).text();
+  assert.ok(privateMetrics.includes('Productos más consultados') && privateMetrics.includes('Jardín en rosa'));
+  assert.ok(!privateMetrics.includes(first.orderId) && !privateMetrics.includes('Comprador ficticio P2'));
+  passed('métricas agregadas, pedidos sin duplicar, datos personales rechazados y panel protegido');
   await mkdir(resolve('output'), { recursive: true });
   await writeFile(resolve('output/p2-qa-report.json'), JSON.stringify({ completedAt: new Date().toISOString(), status: 'passed', checks, orders: 2, inquiries: 1, fixtureDirectory: directory }, null, 2));
-  console.log('P2 QA completa. Informe sin claves ni datos de pedidos: output/p2-qa-report.json');
+  console.log('QA de operación y métricas completa. Informe sin claves ni datos de pedidos: output/p2-qa-report.json');
 } finally { await stop(); }

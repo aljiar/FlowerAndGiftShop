@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { cookies } from 'next/headers';
 import type { Metadata } from 'next';
 import { adminCookie, validSession } from '@/lib/server/admin';
@@ -13,7 +14,7 @@ export default function AdminOrdersPage() {
   let orders, inquiries;
   try { orders = listOrders(); inquiries = listInquiries(); } catch { return <div className="container py-section" role="alert">No se pudo abrir la base de pedidos. Revisa la configuración del servidor.</div>; }
   return <div className="container py-section">
-    <header className="flex flex-wrap items-center justify-between gap-5 mb-8"><div><h1 className="font-serif text-3xl">Pedidos</h1><p className="text-sm text-muted mt-2">Últimos 200 pedidos. Actualiza la página para recibir nuevos.</p></div><AdminLogout /></header>
+    <header className="flex flex-wrap items-center justify-between gap-5 mb-8"><div><h1 className="font-serif text-3xl">Pedidos</h1><p className="text-sm text-muted mt-2">Últimos 200 pedidos. Actualiza la página para recibir nuevos.</p></div><div className="flex flex-wrap items-center gap-3"><Link href="/admin/metricas" className="inline-flex min-h-11 items-center underline text-sm">Ver métricas de actividad</Link><AdminLogout /></div></header>
     {!orders.length && <p>Todavía no hay pedidos.</p>}
     <div className="space-y-6">{orders.map(order => <article key={order.id} className="border border-line p-5 sm:p-7 rounded-sm space-y-5">
       <div className="flex flex-wrap justify-between gap-4"><div><h2 className="font-mono text-xs break-all">{order.id}</h2><p className="text-sm text-muted mt-1">{new Date(order.createdAt).toLocaleString('es-BO', { timeZone: 'America/La_Paz' })}</p></div><OrderStatusControl id={order.id} status={order.status} /></div>

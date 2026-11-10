@@ -65,3 +65,7 @@ Consulta [MVP.md](MVP.md) para operación, respaldos, alcance y criterios de ent
 ## Confianza y operación · P2
 
 Consulta [P2.md](P2.md) para la guía de compra y el seguimiento, y [OPERACION.md](OPERACION.md) para atención de pedidos, respaldo consistente, recuperación y prueba aislada. La prueba recomendada es `npm.cmd run qa:operations -- --allow-demo-orders`; no utiliza la base del negocio y no habilita ventas en la configuración principal.
+
+## Métricas de actividad · P3
+
+Panel privado en `/admin/metricas`, medición propia opcional y separación entre catálogo de muestra y actividad real. Consulta [P3.md](P3.md) para configuración, límites e interpretación. La medición está desactivada por defecto.

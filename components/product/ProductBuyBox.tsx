@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/Badge';
 import { Textarea } from '@/components/ui/Field';
 import { useCartStore } from '@/lib/store/useCartStore';
 import { site, commerceReady } from '@/lib/constants';
+import { trackCartAdd } from '@/lib/track-activity';
 import { formatPrice } from '@/lib/format';
 import type { Product } from '@/types';
 
@@ -37,6 +38,7 @@ export function ProductBuyBox({ product }: Props) {
 
   const handleAdd = () => {
     if (!product.inStock || !hydrated) return;
+    const before = useCartStore.getState().count();
     addToCart({
       productId: product._id,
       variantId,
@@ -44,6 +46,7 @@ export function ProductBuyBox({ product }: Props) {
       message: message || undefined,
 
     });
+    if (useCartStore.getState().count() > before) trackCartAdd(product._id);
     setAdded(true);
     if (timer.current) clearTimeout(timer.current);
     timer.current = setTimeout(() => setAdded(false), 2200);
