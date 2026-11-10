@@ -9,7 +9,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "orders:backup": "node scripts/order-backup.mjs backup",
+    "orders:restore": "node scripts/order-backup.mjs restore",
+    "qa:operations": "node scripts/p2-qa.mjs"
   },
   "dependencies": {
     "@fontsource/inter": "^5.0.18",

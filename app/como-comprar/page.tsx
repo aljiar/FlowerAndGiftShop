@@ -1,0 +1,38 @@
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import { MessageCircle, ClipboardCheck, Wallet, Truck } from 'lucide-react';
+import { Container } from '@/components/ui/Container';
+import { site, commerceReady, whatsappLink } from '@/lib/constants';
+import { purchaseChecks, purchaseQuestions } from '@/lib/purchase-info';
+
+export const metadata: Metadata = { title: 'Cómo comprar', description: 'Cómo consultar flores y regalos en Norah’s Garden: composición, pago manual, entrega y seguimiento.' };
+
+export default function ComoComprarPage() {
+  const steps = [
+    { icon: MessageCircle, title: 'Cuéntanos tu idea', text: 'Elige una referencia, indica la ocasión y la fecha deseada. Consulta por WhatsApp las opciones reales.' },
+    { icon: ClipboardCheck, title: 'Revisa los detalles', text: 'Confirma composición, tamaño, disponibilidad, dirección, entrega y total antes de pagar.' },
+    { icon: Wallet, title: 'Coordina el pago', text: 'Solicita el QR o los datos de transferencia. El negocio verifica el pago manualmente.' },
+    { icon: Truck, title: 'Confirma la entrega', text: 'Acuerda la fecha y condiciones con el negocio. Si tienes un pedido registrado, conserva su enlace privado.' }
+  ];
+  return <section className="py-10 md:py-16"><Container className="max-w-5xl">
+    <span className="eyebrow mb-4">Cómo comprar</span>
+    <h1 className="font-serif text-4xl md:text-5xl max-w-3xl text-balance">Tu regalo, con los detalles claros.</h1>
+    <p className="text-muted mt-5 max-w-2xl">Flores y regalos en {site.city}, con atención personal por WhatsApp y pagos coordinados manualmente.</p>
+    {!commerceReady && <p className="bg-ivory p-4 rounded-lg text-sm mt-6">La tienda está en preparación. El catálogo es de ejemplo y los pedidos desde la web siguen desactivados. Puedes consultar las opciones reales por WhatsApp.</p>}
+    <nav aria-label="En esta guía" className="flex flex-wrap gap-2 mt-6 mb-10">{[['pagos', 'Pagos'], ['entregas', 'Entregas'], ['composicion', 'Fotos y composición'], ['condiciones', 'Cambios y cancelaciones'], ['preguntas', 'Preguntas frecuentes']].map(([id, label]) => <a key={id} href={`#${id}`} className="pill min-h-11">{label}</a>)}</nav>
+    <ol className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">{steps.map(({ icon: Icon, title, text }, index) => <li key={title} className="border border-line rounded-lg p-5"><Icon size={24} aria-hidden="true" className="text-forest mb-5" /><p className="text-sm text-muted mb-2">Paso {index + 1}</p><h2 className="font-serif text-xl">{title}</h2><p className="text-sm text-muted mt-3">{text}</p></li>)}</ol>
+    <div className="grid lg:grid-cols-[minmax(0,1fr)_300px] gap-10 items-start">
+      <div className="space-y-10 min-w-0">
+        <section id="pagos" className="scroll-mt-28"><h2 className="font-serif text-2xl mb-3">Pagos por QR o transferencia</h2><p className="text-muted">Solicita los datos en nuestro WhatsApp oficial: {site.whatsapp}. Revisa el importe total y el destinatario del pago antes de realizarlo. Un comprobante enviado queda sujeto a verificación manual.</p><p className="text-sm text-muted mt-3">La web no cobra automáticamente, no procesa tarjetas y no envía correos automáticos. Si se registra un pedido, su estado inicial es «Pendiente de pago».</p></section>
+        <section id="entregas" className="scroll-mt-28"><h2 className="font-serif text-2xl mb-3">Entrega a coordinar en Cochabamba</h2><p className="text-muted">Consulta tu dirección, la fecha deseada y la tarifa antes de pagar. Las zonas de cobertura, costos y plazos definitivos aún están en preparación.</p><p className="text-sm text-muted mt-3">No se anuncia entrega el mismo día, envío gratuito ni retiro presencial. Para regalar a otra persona, ten a mano su nombre, teléfono, dirección y referencias.</p></section>
+        <section id="composicion" className="scroll-mt-28"><h2 className="font-serif text-2xl mb-3">Fotografías, tamaños y composición</h2><p className="text-muted">Las fotografías actuales ilustran estilos y no garantizan una composición disponible. Los productos y sus precios siguen siendo de ejemplo.</p><p className="text-sm text-muted mt-3">Si una flor, color, cantidad o presentación son esenciales para tu regalo, consúltalos antes de pagar. Las reglas de sustitución están pendientes de definir; solicita las condiciones aplicables.</p></section>
+        <section id="condiciones" className="scroll-mt-28"><h2 className="font-serif text-2xl mb-3">Cambios y cancelaciones</h2><p className="text-muted">Estas reglas aún no están definidas. Consulta y acuerda las condiciones antes del pago. No se anuncian cambios sin costo, plazos de cancelación ni devoluciones automáticas.</p><p className="text-sm text-muted mt-3">Si ya tienes un pedido y necesitas un cambio, escríbenos con su número para revisar tu caso. Un cambio de estado en la web no ejecuta un reembolso.</p></section>
+        <section id="seguimiento" className="scroll-mt-28"><h2 className="font-serif text-2xl mb-3">Seguimiento de un pedido registrado</h2><p className="text-muted">Cuando los pedidos web estén habilitados, la confirmación mostrará un enlace privado para consultar el estado. Guárdalo y no lo compartas: permite ver los datos de entrega.</p><p className="text-sm text-muted mt-3">El negocio actualiza los estados manualmente: pendiente de pago, pago confirmado, en preparación y entregado, o cancelado. Consulta por WhatsApp si necesitas aclaraciones.</p></section>
+        <section id="datos" className="scroll-mt-28"><h2 className="font-serif text-2xl mb-3">Datos para coordinar tu regalo</h2><p className="text-muted">Un pedido utiliza los datos del comprador y destinatario, teléfonos, dirección, referencias y dedicatoria para la coordinación y entrega. El correo del comprador es opcional.</p><p className="text-sm text-muted mt-3">El carrito se conserva en este navegador. El formulario guarda un borrador temporal en la pestaña y permite borrarlo. El pedido confirmado desde la web se conserva para su gestión; los detalles de conservación de datos deben definirse antes del lanzamiento.</p></section>
+      </div>
+      <aside className="border border-line bg-ivory/40 rounded-lg p-5 lg:sticky lg:top-28"><h2 className="font-serif text-xl mb-4">Antes de pagar, confirma</h2><ul className="space-y-4 text-sm">{purchaseChecks.map(text => <li key={text} className="flex gap-2"><span aria-hidden="true">✓</span>{text}</li>)}</ul><a href={whatsappLink('Hola, quiero revisar composición, disponibilidad, total y condiciones de entrega antes de pagar un regalo de Norah’s Garden.')} target="_blank" rel="noreferrer" className="flex items-center justify-center min-h-12 bg-forest text-cream rounded-sm text-sm px-4 py-3 mt-6 text-center">Consultar por WhatsApp</a><p className="text-sm text-muted mt-3">{site.hours}</p></aside>
+    </div>
+    <section id="preguntas" className="mt-14 scroll-mt-28"><h2 className="font-serif text-3xl mb-6">Preguntas frecuentes</h2><div className="divide-y divide-line border-y border-line">{purchaseQuestions.map(item => <details key={item.question} className="group py-1"><summary className="cursor-pointer min-h-14 py-4 pr-4 font-medium">{item.question}</summary><p className="text-muted pb-5 max-w-3xl">{item.answer}</p></details>)}</div></section>
+    <div className="flex flex-wrap gap-3 mt-8"><Link href="/coleccion" className="inline-flex min-h-11 items-center rounded-sm border border-forest px-5 text-sm">Explorar el catálogo</Link><Link href="/contacto" className="inline-flex min-h-11 items-center px-3 underline text-sm">Contacto y horarios</Link></div>
+  </Container></section>;
+}

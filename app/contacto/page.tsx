@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import type { Metadata } from 'next';
 import { MessageCircle, Clock, MapPin } from 'lucide-react';
 import { Container } from '@/components/ui/Container';
@@ -28,7 +29,7 @@ export default function ContactoPage() {
           <p className="text-sm text-muted mt-2">Si escribes fuera de horario, atenderemos tu consulta al retomar la atención.</p>
         </div>
       </div>
-      <div className="mt-12 space-y-8">
+      <div className="mt-12 space-y-8"><Link href="/como-comprar" className="inline-flex items-center min-h-12 border border-forest rounded-sm px-5 text-sm">Ver la guía de compra y preguntas frecuentes</Link>
         <div><h2 className="font-serif text-2xl mb-4">Cómo comprar</h2>
           {!commerceReady && <p className="text-sm text-muted mb-4">El catálogo actual es de ejemplo: sus fotos y precios son de referencia. Los pedidos en la web aún no están habilitados.</p>}
           <ol className="list-decimal pl-5 space-y-3 text-sm">

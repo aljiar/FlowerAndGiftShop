@@ -19,5 +19,5 @@ const nextConfig = {
 // El servidor de desarrollo y el build no deben sobrescribir sus artefactos.
 export default (phase) => ({
   ...nextConfig,
-  distDir: phase === 'phase-development-server' ? '.next-dev' : '.next'
+  distDir: process.env.NORAH_QA_BUILD === 'true' ? '.next-qa' : phase === 'phase-development-server' ? '.next-dev' : '.next'
 });

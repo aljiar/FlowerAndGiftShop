@@ -58,7 +58,7 @@ export const priceRange = { min: 120, max: 1200 };
 export const navLinks = [
   { href: '/coleccion', label: 'Catálogo' },
   { href: '/#ocasiones', label: 'Por ocasión' },
-  { href: '/contacto', label: 'Cómo comprar' },
+  { href: '/como-comprar', label: 'Cómo comprar' },
   { href: '/eventos', label: 'Eventos' },
   { href: '/nosotros', label: 'Nosotros' }
 ];

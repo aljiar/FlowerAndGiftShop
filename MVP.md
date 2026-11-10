@@ -68,3 +68,7 @@ El catálogo expresa disponibilidad manual mediante `inStock`; no descuenta inve
 ## Pruebas HTTP reproducibles
 
 `scripts/mvp-http.mjs` prueba las rutas de producción: precio recalculado, reintentos concurrentes, confirmación privada y administración. Crea pedidos ficticios: ejecutarlo contra un servidor de QA con una base separada, usando las variables `MVP_TEST_BASE_URL` y `MVP_TEST_ADMIN_PASSWORD`. No ejecutarlo contra la tienda en operación.
+
+## Confianza y operación · P2
+
+Consulta [P2.md](P2.md) para la guía de compra y el seguimiento, y [OPERACION.md](OPERACION.md) para atención de pedidos, respaldo consistente, recuperación y prueba aislada. La prueba recomendada es `npm.cmd run qa:operations -- --allow-demo-orders`; no utiliza la base del negocio y no habilita ventas en la configuración principal.

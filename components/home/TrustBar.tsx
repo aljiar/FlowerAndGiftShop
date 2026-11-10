@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { MessageCircle, MapPin, CreditCard } from 'lucide-react';
 import { Container } from '@/components/ui/Container';
 const items = [
@@ -11,5 +12,6 @@ export function TrustBar() {
     <div className="grid md:grid-cols-3 gap-8">{items.map(({ icon: Icon, title, text }) => <div key={title}>
       <Icon size={24} className="text-clay mb-4" /><h3 className="font-serif text-xl">{title}</h3><p className="text-sm text-muted mt-2">{text}</p>
     </div>)}</div>
+    <Link href="/como-comprar" className="inline-flex items-center min-h-11 mt-6 text-sm underline">Cómo comprar, pagar y coordinar la entrega</Link>
   </Container></section>;
 }

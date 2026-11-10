@@ -1,4 +1,5 @@
 'use client';
+import Link from 'next/link';
 
 import { useEffect, useRef, useState } from 'react';
 import { Check, ShoppingBag, Truck, Calendar, Clock } from 'lucide-react';
@@ -139,6 +140,7 @@ export function ProductBuyBox({ product }: Props) {
       </div>
 
       <DeliveryEstimate subtotal={unitPrice} />
+      <Link href="/como-comprar#composicion" className="inline-flex items-center min-h-11 text-sm underline">Qué confirmar sobre fotos, composición y entrega</Link>
       {/* Avisos */}
       <ul className="space-y-3 pt-2 text-xs text-muted border-t border-line">
         <li className="flex items-start gap-3">

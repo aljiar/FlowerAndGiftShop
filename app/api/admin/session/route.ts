@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
 import { adminCookie, createSession, validPassword } from '@/lib/server/admin';
+import { isSameOrigin } from '@/lib/server/request-origin';
 let windowStart = 0;
 let attempts = 0;
 export async function POST(req: Request) {
-  const origin = req.headers.get('origin');
-  if (origin && origin !== new URL(req.url).origin) return new NextResponse(null, { status: 403 });
+  if (!isSameOrigin(req)) return new NextResponse(null, { status: 403 });
   if (Date.now() - windowStart > 60000) { windowStart = Date.now(); attempts = 0; }
   if (++attempts > 20) return NextResponse.json({ error: 'Demasiados intentos. Espera un minuto.' }, { status: 429, headers: { 'Retry-After': '60' } });
   let body;
@@ -14,7 +14,8 @@ export async function POST(req: Request) {
   res.cookies.set(adminCookie, createSession(), { httpOnly: true, sameSite: 'strict', secure: process.env.NODE_ENV === 'production', path: '/', maxAge: 28800 });
   return res;
 }
-export async function DELETE() {
+export async function DELETE(req: Request) {
+  if (!isSameOrigin(req)) return new NextResponse(null, { status: 403 });
   const res = NextResponse.json({ ok: true });
   res.cookies.set(adminCookie, '', { path: '/', maxAge: 0 });
   return res;

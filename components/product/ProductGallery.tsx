@@ -1,4 +1,5 @@
 'use client';
+import Link from 'next/link';
 
 import Image from 'next/image';
 import { useState } from 'react';
@@ -41,6 +42,6 @@ export function ProductGallery({ images }: Props) {
           className="object-cover"
         />
       </div>
-    </div><p className="text-xs text-muted mt-3">Fotografías de referencia. Consulta la composición del arreglo antes de confirmar el pago.</p></div>
+    </div><p className="text-xs text-muted mt-3">Fotografías de referencia. Consulta la composición del arreglo antes de confirmar el pago. <Link href="/como-comprar#composicion" className="underline">Ver detalles</Link></p></div>
   );
 }

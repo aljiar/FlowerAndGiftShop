@@ -12,7 +12,7 @@ export function Footer() {
         </div>
         <div><h2 className="font-serif text-xl mb-4 text-cream">Explorar</h2><ul className="space-y-3 text-sm text-cream/80">
           <li><Link href="/coleccion">Catálogo</Link></li><li><Link href="/#ocasiones">Por ocasión</Link></li>
-          <li><Link href="/nosotros">Nosotros</Link></li><li><Link href="/contacto">Cómo comprar y contacto</Link></li>
+          <li><Link href="/nosotros">Nosotros</Link></li><li><Link href="/como-comprar">Cómo comprar</Link></li><li><Link href="/contacto">Contacto y horarios</Link></li>
         </ul></div>
         <div><h2 className="font-serif text-xl mb-4 text-cream">Atención</h2><ul className="space-y-3 text-sm text-cream/80">
           <li className="flex items-start gap-2"><MapPin size={16} className="shrink-0 mt-1" />{site.address}</li>
@@ -22,7 +22,7 @@ export function Footer() {
         </ul></div>
       </div>
       <div className="border-t border-cream/20 mt-12 pt-6 flex flex-col md:flex-row justify-between gap-4 text-xs text-cream/80">
-        <p>© {new Date().getFullYear()} {site.name}.</p><div className="flex flex-wrap gap-5"><Link href="/contacto#entregas">Entregas</Link><Link href="/contacto#politicas">Políticas</Link><Link href="/contacto#terminos">Información de compra</Link></div>
+        <p>© {new Date().getFullYear()} {site.name}.</p><div className="flex flex-wrap gap-5"><Link href="/como-comprar#entregas">Entregas</Link><Link href="/como-comprar#condiciones">Políticas</Link><Link href="/como-comprar#pagos">Información de compra</Link></div>
       </div>
     </Container>
   </footer>;

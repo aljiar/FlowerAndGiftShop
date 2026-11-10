@@ -61,3 +61,7 @@ Esta implementación requiere un **servidor Node con disco persistente y HTTPS**
 Validar fotos, productos, precios, contactos, zonas de entrega y políticas con el negocio: el catálogo original contiene datos de ejemplo. No se ha publicado ni desplegado el proyecto.
 
 Consulta [MVP.md](MVP.md) para operación, respaldos, alcance y criterios de entrega.
+
+## Confianza y operación · P2
+
+Consulta [P2.md](P2.md) para la guía de compra y el seguimiento, y [OPERACION.md](OPERACION.md) para atención de pedidos, respaldo consistente, recuperación y prueba aislada. La prueba recomendada es `npm.cmd run qa:operations -- --allow-demo-orders`; no utiliza la base del negocio y no habilita ventas en la configuración principal.

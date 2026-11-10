@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Field';
@@ -27,16 +27,29 @@ export function AdminLogout() {
 }
 export function OrderStatusControl({ id, status }: { id: string; status: OrderStatus }) {
   const router = useRouter();
-  const [busy, setBusy] = useState(false), [error, setError] = useState('');
-  return <div className="space-y-2"><label className="text-xs" htmlFor={id}>Estado del pedido</label>
-    <select id={id} value={status} disabled={busy} className="block border border-line bg-cream p-3 text-sm max-w-full" onChange={async e => {
-      setBusy(true); setError('');
-      try {
-        const res = await fetch('/api/admin/orders', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, status: e.target.value }) });
-        if (!res.ok) throw new Error((await res.json()).error);
-        router.refresh();
-      } catch (e) { setError(e instanceof Error ? e.message : 'No se pudo actualizar.'); } finally { setBusy(false); }
-    }}>{orderStatuses.map(s => <option key={s} value={s}>{statusLabels[s]}</option>)}</select>
-    {error && <p role="alert" className="text-clay text-sm">{error}</p>}
-  </div>;
+  const [selected, setSelected] = useState(status);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  const [saved, setSaved] = useState(false);
+  useEffect(() => setSelected(status), [status]);
+  return <form className="space-y-3 max-w-sm" onSubmit={async event => {
+    event.preventDefault();
+    if (busy || selected === status) return;
+    setBusy(true); setError(''); setSaved(false);
+    try {
+      const response = await fetch('/api/admin/orders', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, status: selected }) });
+      if (!response.ok) throw new Error((await response.json()).error);
+      setSaved(true); router.refresh();
+    } catch (failure) { setError(failure instanceof Error ? failure.message : 'No se pudo actualizar.'); }
+    finally { setBusy(false); }
+  }}>
+    <label className="block text-sm font-medium" htmlFor={id}>Estado del pedido</label>
+    <select id={id} aria-describedby={id + '-note'} value={selected} disabled={busy} className="block border border-line rounded-sm bg-cream min-h-11 p-3 text-base max-w-full" onChange={event => { setSelected(event.target.value as OrderStatus); setSaved(false); }}>
+      {orderStatuses.map(value => <option key={value} value={value}>{statusLabels[value]}</option>)}
+    </select>
+    <p id={id + '-note'} className="text-sm text-muted">{selected === 'confirmed' ? 'Marca el pago solo después de verificarlo y confirmar los detalles de entrega.' : selected === 'cancelled' ? 'Cancelar el pedido no ejecuta un reembolso. Coordina cualquier importe o condición por separado.' : 'Guarda el estado después de comprobarlo. El cliente lo consulta desde su enlace privado; no se envían avisos automáticos.'}</p>
+    <Button type="submit" disabled={busy || selected === status}>{busy ? 'Guardando…' : 'Guardar estado'}</Button>
+    {saved && <p role="status" className="text-sm">Estado guardado.</p>}
+    {error && <p role="alert" className="text-sm">{error}</p>}
+  </form>;
 }

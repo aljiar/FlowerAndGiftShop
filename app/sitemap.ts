@@ -12,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/coleccion`, lastModified: now, changeFrequency: 'daily', priority: 0.9 },
     { url: `${base}/eventos`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
     { url: `${base}/nosotros`, lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
+    { url: `${base}/como-comprar`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${base}/contacto`, lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
     ...occasions.map((o) => ({
       url: `${base}/ocasion/${o.slug}`,

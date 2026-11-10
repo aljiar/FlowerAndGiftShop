@@ -189,6 +189,7 @@ export function CheckoutForm() {
             <fieldset className="space-y-3"><legend className="text-sm font-medium mb-3">¿Cómo prefieres pagar?</legend>{[{ id: 'qr', label: 'QR' }, { id: 'transfer', label: 'Transferencia bancaria' }].map(method => <label key={method.id} className="min-h-12 flex items-center gap-3 border border-line rounded-sm p-4"><input type="radio" name="method" value={method.id} checked={form.method === method.id} onChange={event => change('method', event.target.value)} />{method.label}</label>)}</fieldset>
             <p className="text-sm text-muted">Guardaremos tu pedido como pendiente de pago. Después podrás escribirnos por WhatsApp para recibir los datos de pago y confirmar la entrega.</p>
           </>}
+          <Link href="/como-comprar" className="inline-flex items-center min-h-11 text-sm underline">Consultar pagos, entregas y condiciones</Link>
           {error && <p role="alert" className="border-l-2 border-forest pl-3 text-sm font-medium">{error}</p>}
           <div className="border-t border-line pt-5 space-y-3">
             <p className="font-medium" aria-live="polite">{totalLabel}</p>
